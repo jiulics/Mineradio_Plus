@@ -54,11 +54,23 @@ const { once } = require('events');
 const { fileURLToPath } = require('url');
 const { analyzePodcastDjStream, analyzePodcastDjIntro } = require('./dj-analyzer');
 
+function ignoreBrokenConsolePipe(stream) {
+  if (!stream || typeof stream.on !== 'function') return;
+  stream.on('error', (err) => {
+    if (err && err.code === 'EPIPE') return;
+    throw err;
+  });
+}
+
+ignoreBrokenConsolePipe(process.stdout);
+ignoreBrokenConsolePipe(process.stderr);
+
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const COOKIE_FILE = process.env.COOKIE_FILE || path.join(__dirname, '.cookie');
 const QQ_COOKIE_FILE = process.env.QQ_COOKIE_FILE || path.join(__dirname, '.qq-cookie');
+const MIGU_COOKIE_FILE = process.env.MIGU_COOKIE_FILE || path.join(__dirname, '.migu-cookie');
 const UPDATE_WORK_DIR = process.env.MINERADIO_UPDATE_DIR || path.join(__dirname, 'updates');
 const UPDATE_DOWNLOAD_DIR = process.env.MINERADIO_UPDATE_DOWNLOAD_DIR || path.join(UPDATE_WORK_DIR, 'downloads');
 const UPDATE_PATCH_BACKUP_DIR = process.env.MINERADIO_PATCH_BACKUP_DIR || path.join(UPDATE_WORK_DIR, 'backups', 'patches');
@@ -84,6 +96,16 @@ const WEATHER_DEFAULT_LOCATION = {
   longitude: 121.4737,
   timezone: 'Asia/Shanghai',
 };
+const QQ_LOGIN_COOKIE_PRIORITY = [
+  'uin', 'qqmusic_uin', 'wxuin', 'login_type', 'qm_keyst', 'qqmusic_key',
+  'music_key', 'p_skey', 'skey', 'psrf_qqopenid', 'psrf_qqunionid',
+  'psrf_qqaccess_token', 'psrf_qqrefresh_token', 'wxopenid', 'wxunionid',
+  'wxrefresh_token', 'wxskey', 'p_uin', 'ptcz', 'RK',
+];
+const NETEASE_LOGIN_COOKIE_PRIORITY = [
+  'MUSIC_U', '__csrf', 'NMTID', 'MUSIC_A', '__remember_me', '_ntes_nuid',
+  '_ntes_nnid', 'WEVNSM', 'WNMCID', 'JSESSIONID-WYYY',
+];
 
 const updateDownloadJobs = new Map();
 
@@ -184,6 +206,14 @@ catch (e) { qqCookie = ''; }
 function saveQQCookie(c) {
   qqCookie = normalizeCookieHeader(c) || rawCookieFallback(c);
   try { fs.writeFileSync(QQ_COOKIE_FILE, qqCookie); } catch (e) {}
+}
+
+let miguCookie = '';
+try { if (fs.existsSync(MIGU_COOKIE_FILE)) miguCookie = fs.readFileSync(MIGU_COOKIE_FILE, 'utf8').trim(); }
+catch (e) { miguCookie = ''; }
+function saveMiguCookie(c) {
+  miguCookie = normalizeCookieHeader(c) || rawCookieFallback(c);
+  try { fs.writeFileSync(MIGU_COOKIE_FILE, miguCookie); } catch (e) {}
 }
 
 // ---------- 工具 ----------
@@ -1737,6 +1767,13 @@ const QQ_HEADERS = {
   Referer: 'https://y.qq.com/',
   'User-Agent': UA,
 };
+const MOBILE_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30';
+const LISTEN1_PROVIDER_CONFIG = {
+  kuwo: { label: '酷我音乐', idPrefix: 'kwtrack_' },
+  kugou: { label: '酷狗音乐', idPrefix: 'kgtrack_' },
+  migu: { label: '咪咕音乐', idPrefix: 'mgtrack_' },
+};
+let kuwoTokenCache = { value: '', expiresAt: 0 };
 
 function requestText(targetUrl, opts, body) {
   opts = opts || {};
@@ -2063,12 +2100,56 @@ function uniqueSongsByKey(songs) {
   const seen = new Set();
   const out = [];
   (songs || []).forEach(song => {
-    const key = String(song && (song.id || song.name + '|' + song.artist) || '').trim();
+    const provider = song && (song.provider || song.source || song.type) || '';
+    const key = String(song && (provider + ':' + (song.id || song.mid || song.songmid || song.name + '|' + song.artist)) || '').trim();
     if (!key || seen.has(key)) return;
     seen.add(key);
     out.push(song);
   });
   return out;
+}
+
+function weatherRadioProviders(value) {
+  const raw = String(value || '').split(',').map(v => v.trim().toLowerCase()).filter(Boolean);
+  const defaults = ['netease'];
+  const allowed = new Set(['qq', 'listen1', 'netease']);
+  const out = [];
+  (raw.length ? raw : defaults).forEach(provider => {
+    if (allowed.has(provider) && !out.includes(provider)) out.push(provider);
+  });
+  if (!out.includes('netease')) out.push('netease');
+  return out;
+}
+
+async function searchWeatherProviderSongs(provider, query, limit) {
+  if (provider === 'qq') {
+    try {
+      const songs = await handleQQSearch(query, limit || 6);
+      return tagWeatherPoolSongs(songs, 'qq');
+    } catch (e) {
+      console.warn('[WeatherRadio] QQ search failed:', query, e.message);
+      return [];
+    }
+  }
+  if (provider === 'listen1') {
+    const providers = ['kuwo', 'kugou', 'migu'];
+    const settled = await Promise.allSettled(providers.map(p => handleListen1Search(p, query, Math.max(3, Math.ceil((limit || 6) / 2)))));
+    let songs = [];
+    settled.forEach(result => {
+      if (result.status === 'fulfilled') {
+        const list = result.value && (result.value.songs || result.value.result || []);
+        if (Array.isArray(list)) songs = songs.concat(list);
+      }
+    });
+    return tagWeatherPoolSongs(songs, 'listen1');
+  }
+  try {
+    const songs = await handleSearch(query, limit || 6);
+    return tagWeatherPoolSongs(songs, 'netease');
+  } catch (e) {
+    console.warn('[WeatherRadio] NetEase search failed:', query, e.message);
+    return [];
+  }
 }
 
 function tagWeatherPoolSongs(songs, source) {
@@ -2210,13 +2291,14 @@ async function buildWeatherRadio(params) {
     weather = fallbackWeatherForRadio(params, e);
   }
   const queries = weatherRadioSeedQueries(weather.mood);
+  const providers = weatherRadioProviders(params && params.providers);
   let songs = [];
-  const settled = await Promise.allSettled(queries.slice(0, 4).map(q => handleSearch(q, 6)));
+  const settled = await Promise.allSettled(queries.slice(0, 4).flatMap(q => providers.map(provider => searchWeatherProviderSongs(provider, q, 6))));
   settled.forEach(result => {
     if (result.status === 'fulfilled' && Array.isArray(result.value)) songs = songs.concat(result.value);
   });
   if (songs.length < 10 && weather.mood && Array.isArray(weather.mood.keywords)) {
-    const more = await Promise.allSettled(weather.mood.keywords.slice(0, 2).map(q => handleSearch(q, 6)));
+    const more = await Promise.allSettled(weather.mood.keywords.slice(0, 2).flatMap(q => providers.map(provider => searchWeatherProviderSongs(provider, q, 6))));
     more.forEach(result => {
       if (result.status === 'fulfilled' && Array.isArray(result.value)) songs = songs.concat(result.value);
     });
@@ -2229,6 +2311,7 @@ async function buildWeatherRadio(params) {
       title: weather.mood.title,
       subtitle: weather.mood.tagline,
       seedQueries: queries.slice(0, 4),
+      providers,
       songs: songs.slice(0, 18),
       updatedAt: Date.now(),
     },
@@ -2344,6 +2427,16 @@ function audioProxyHeadersFor(audioUrl, range) {
   try {
     const host = new URL(audioUrl).hostname.toLowerCase();
     if (host.includes('qq.com') || host.includes('qpic.cn')) headers.Referer = 'https://y.qq.com/';
+    if (host.includes('kugou.com')) {
+      headers.Referer = 'https://www.kugou.com/';
+      headers['User-Agent'] = MOBILE_UA;
+    }
+    if (host.includes('kuwo.cn')) headers.Referer = 'https://www.kuwo.cn/';
+    if (host.includes('migu.cn') || host.includes('musicapp.migu.cn')) {
+      headers.Referer = host.includes('m.music.migu.cn')
+        ? 'https://m.music.migu.cn/'
+        : 'https://music.migu.cn/v3/music/player/audio?from=migu';
+    }
   } catch (e) {}
   if (range) headers.Range = range;
   return headers;
@@ -2360,15 +2453,39 @@ function audioContentTypeForUrl(audioUrl, upstreamType) {
   return upstreamType || 'audio/mpeg';
 }
 
+function normalizeQQImageUrl(value) {
+  let url = String(value || '').trim();
+  if (!url) return '';
+  if (url.startsWith('//')) url = 'https:' + url;
+  if (/^http:\/\//i.test(url)) url = url.replace(/^http:\/\//i, 'https://');
+  if (!/^https?:\/\//i.test(url)) return '';
+  return url;
+}
+
+function qqPlaylistCoverSetFromTracks(tracks) {
+  const seen = new Set();
+  const out = [];
+  (tracks || []).forEach(song => {
+    const cover = normalizeQQImageUrl(song && song.cover);
+    if (!cover || seen.has(cover)) return;
+    seen.add(cover);
+    out.push(cover);
+  });
+  return out.slice(0, 4);
+}
+
 function mapQQPlaylist(pl, kind) {
   pl = pl || {};
   const id = pl.dissid || pl.tid || pl.dirid || pl.id || pl.diss_id;
+  const cover = normalizeQQImageUrl(pl.diss_cover || pl.logo || pl.picurl || pl.cover || '');
   return {
     provider: 'qq',
     source: 'qq',
     id: id ? String(id) : '',
     name: pl.diss_name || pl.name || pl.title || '',
-    cover: pl.diss_cover || pl.logo || pl.picurl || pl.cover || '',
+    cover,
+    coverSet: cover ? [cover] : [],
+    coverSource: cover ? 'meta' : 'fallback',
     trackCount: pl.song_cnt || pl.songnum || pl.total_song_num || pl.song_count || 0,
     playCount: pl.listen_num || pl.visitnum || pl.play_count || 0,
     creator: pl.hostname || pl.nick || pl.creator || 'QQ 音乐',
@@ -2400,7 +2517,7 @@ function mapQQPlaylistTrack(raw) {
     artistMid: artists[0] && artists[0].mid,
     album: album.name || album.title || track.albumname || raw.albumname || '',
     albumMid,
-    cover: qqAlbumCover(albumMid, 300),
+    cover: normalizeQQImageUrl(qqAlbumCover(albumMid, 300)),
     duration: (Number(track.interval || raw.interval) || 0) * 1000,
     fee: track.pay && Number(track.pay.pay_play) ? 1 : 0,
     playable: false,
@@ -2445,19 +2562,18 @@ async function handleQQUserPlaylists() {
     seen.add(pl.id);
     return true;
   }).sort((a, b) => Number(isQQFavoritePlaylist(b)) - Number(isQQFavoritePlaylist(a)));
+  await enrichQQFavoritePlaylistCovers(playlists, uin);
   return { loggedIn: true, provider: 'qq', userId: uin, playlists };
 }
 
-async function handleQQPlaylistTracks(id) {
-  const info = await getQQLoginInfo();
-  if (!info.loggedIn || !info.userId) return { loggedIn: false, provider: 'qq', tracks: [] };
+async function fetchQQPlaylistDetail(id, uin) {
   const pid = String(id || '').trim();
-  if (!pid) return { loggedIn: true, provider: 'qq', error: 'Missing QQ playlist id', tracks: [] };
+  if (!pid) return { playlist: null, tracks: [] };
   const result = await qqGetJSON('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg', {
     type: 1,
     utf8: 1,
     disstid: pid,
-    loginUin: info.userId,
+    loginUin: uin || 0,
     format: 'json',
     inCharset: 'utf8',
     outCharset: 'utf-8',
@@ -2468,13 +2584,58 @@ async function handleQQPlaylistTracks(id) {
   const detail = result && result.cdlist && result.cdlist[0] ? result.cdlist[0] : {};
   const rawTracks = Array.isArray(detail.songlist) ? detail.songlist : [];
   const tracks = rawTracks.map(mapQQPlaylistTrack).filter(s => s.name && (s.mid || s.id));
+  const detailCover = normalizeQQImageUrl(detail.logo || detail.diss_cover || '');
+  const coverSet = qqPlaylistCoverSetFromTracks(tracks);
   const playlist = {
     provider: 'qq',
     id: pid,
     name: detail.dissname || detail.diss_name || detail.name || '',
-    cover: detail.logo || detail.diss_cover || '',
+    cover: detailCover || coverSet[0] || '',
+    coverSet: (coverSet.length ? coverSet : (detailCover ? [detailCover] : [])).slice(0, 4),
+    coverSource: detailCover ? 'detail' : (coverSet.length ? 'tracks' : 'fallback'),
     trackCount: tracks.length,
   };
+  return { playlist, tracks };
+}
+
+async function enrichQQFavoritePlaylistCovers(playlists, uin) {
+  const out = Array.isArray(playlists) ? playlists : [];
+  const targets = out.filter(pl => pl && pl.id && (!pl.cover || !pl.coverSet || !pl.coverSet.length || isQQFavoritePlaylist(pl))).slice(0, 3);
+  for (const pl of targets) {
+    try {
+      const detail = await fetchQQPlaylistDetail(pl.id, uin);
+      const cover = normalizeQQImageUrl(detail.playlist && detail.playlist.cover);
+      const coverSet = qqPlaylistCoverSetFromTracks(detail.tracks);
+      if (!pl.cover && (cover || coverSet[0])) {
+        pl.cover = cover || coverSet[0];
+        pl.coverSource = cover ? 'detail' : 'tracks';
+      } else if (cover && isQQFavoritePlaylist(pl)) {
+        pl.cover = cover;
+        pl.coverSource = 'detail';
+      }
+      pl.coverSet = (coverSet.length ? coverSet : (pl.cover ? [pl.cover] : [])).slice(0, 4);
+      if (!pl.coverSource) pl.coverSource = pl.cover ? 'meta' : 'fallback';
+    } catch (e) {
+      console.warn('[QQPlaylistCover] enrich failed:', pl && pl.name, e.message);
+      if (!Array.isArray(pl.coverSet)) pl.coverSet = pl.cover ? [pl.cover] : [];
+      if (!pl.coverSource) pl.coverSource = pl.cover ? 'meta' : 'fallback';
+    }
+  }
+  out.forEach(pl => {
+    if (!Array.isArray(pl.coverSet)) pl.coverSet = pl.cover ? [pl.cover] : [];
+    if (!pl.coverSource) pl.coverSource = pl.cover ? 'meta' : 'fallback';
+  });
+  return out;
+}
+
+async function handleQQPlaylistTracks(id) {
+  const info = await getQQLoginInfo();
+  if (!info.loggedIn || !info.userId) return { loggedIn: false, provider: 'qq', tracks: [] };
+  const pid = String(id || '').trim();
+  if (!pid) return { loggedIn: true, provider: 'qq', error: 'Missing QQ playlist id', tracks: [] };
+  const detail = await fetchQQPlaylistDetail(pid, info.userId);
+  const playlist = detail.playlist || { provider: 'qq', id: pid, name: '', cover: '', coverSet: [], coverSource: 'fallback', trackCount: 0 };
+  const tracks = detail.tracks || [];
   return { loggedIn: true, provider: 'qq', playlist, tracks };
 }
 
@@ -2722,6 +2883,506 @@ async function handleQQSongUrl(mid, mediaMid, qualityPreference) {
     rawMessage: info && (info.msg || info.tips || info.errmsg || ''),
     tried: fileCandidates.map(item => item.label + ' · ' + item.filename),
     requestedQuality,
+  };
+}
+
+function listen1ProviderLabel(provider) {
+  return (LISTEN1_PROVIDER_CONFIG[provider] && LISTEN1_PROVIDER_CONFIG[provider].label) || provider || 'Listen1';
+}
+
+function listen1SourceUrl(provider, id) {
+  const plain = String(id || '').replace(/^(kwtrack_|kgtrack_|mgtrack_)/, '');
+  if (provider === 'kuwo') return `https://www.kuwo.cn/play_detail/${plain}`;
+  if (provider === 'kugou') return `https://www.kugou.com/song/#hash=${plain}`;
+  if (provider === 'migu') return `https://music.migu.cn/v3/music/song/${plain}`;
+  return '';
+}
+
+function htmlDecode(value) {
+  return String(value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&apos;|&#x27;|&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ');
+}
+
+function mapListen1Song(provider, raw) {
+  raw = raw || {};
+  if (provider === 'kuwo') {
+    const rid = raw.DC_TARGETID || raw.rid || raw.musicrid || raw.id || '';
+    const id = `kwtrack_${rid}`;
+    return {
+      provider: 'listen1',
+      source: 'listen1',
+      type: 'listen1',
+      id,
+      listen1Source: 'kuwo',
+      listen1RawId: id,
+      name: htmlDecode(raw.NAME || raw.name || raw.SONGNAME || ''),
+      artist: htmlDecode(raw.ARTIST || raw.artist || ''),
+      artists: raw.ARTIST || raw.artist ? [{ name: htmlDecode(raw.ARTIST || raw.artist) }] : [],
+      album: htmlDecode(raw.ALBUM || raw.album || ''),
+      cover: raw.pic || (raw.web_albumpic_short ? `https://img2.kuwo.cn/star/albumcover/${raw.web_albumpic_short}` : ''),
+      duration: (Number(raw.DURATION || raw.duration || 0) || 0) * 1000,
+      matchRequired: false,
+      playable: false,
+      sourceUrl: listen1SourceUrl('kuwo', id),
+    };
+  }
+  if (provider === 'kugou') {
+    const hash = raw.FileHash || raw.FileHash320 || raw.Hash || raw.hash || '';
+    const id = `kgtrack_${hash}`;
+    const singer = Array.isArray(raw.SingerName) ? raw.SingerName[0] : (raw.SingerName || raw.singername || '');
+    return {
+      provider: 'listen1',
+      source: 'listen1',
+      type: 'listen1',
+      id,
+      listen1Source: 'kugou',
+      listen1RawId: id,
+      name: htmlDecode(raw.SongName || raw.songname || raw.FileName || ''),
+      artist: htmlDecode(singer),
+      artists: singer ? [{ name: htmlDecode(singer) }] : [],
+      album: htmlDecode(raw.AlbumName || raw.album_name || ''),
+      cover: '',
+      duration: (Number(raw.Duration || raw.duration || 0) || 0) * 1000,
+      albumId: raw.AlbumID || raw.album_id || '',
+      matchRequired: false,
+      playable: false,
+      sourceUrl: listen1SourceUrl('kugou', id),
+    };
+  }
+  if (provider === 'migu') {
+    const copyrightId = raw.copyrightId || raw.copyright_id || raw.id || '';
+    const id = `mgtrack_${copyrightId}`;
+    const singer = raw.singerList && raw.singerList[0] ? raw.singerList[0].name : (raw.artists && raw.artists[0] ? raw.artists[0].name : raw.singer || '');
+    const img = raw.img1 || raw.albumImg || (raw.albumImgs && raw.albumImgs[1] && raw.albumImgs[1].img) || '';
+    return {
+      provider: 'listen1',
+      source: 'listen1',
+      type: 'listen1',
+      id,
+      listen1Source: 'migu',
+      listen1RawId: id,
+      name: raw.songName || raw.name || '',
+      artist: singer || '',
+      artists: singer ? [{ name: singer }] : [],
+      album: raw.album || '',
+      cover: img,
+      duration: (Number(raw.duration || raw.length || 0) || 0) * 1000,
+      quality: raw.toneControl || '',
+      songId: raw.songId || raw.song_id || '',
+      contentId: raw.contentId || raw.content_id || '',
+      lyricUrl: raw.ext && raw.ext.lrcUrl || raw.lrcUrl || '',
+      tlyricUrl: raw.ext && raw.ext.trcUrl || raw.trcUrl || '',
+      matchRequired: false,
+      playable: false,
+      sourceUrl: listen1SourceUrl('migu', id),
+    };
+  }
+  return null;
+}
+
+function normalizeListen1Provider(value) {
+  const provider = String(value || '').trim().toLowerCase();
+  return LISTEN1_PROVIDER_CONFIG[provider] ? provider : '';
+}
+
+function normalizeListen1TrackId(provider, id) {
+  provider = normalizeListen1Provider(provider);
+  id = String(id || '').trim();
+  const prefix = LISTEN1_PROVIDER_CONFIG[provider] && LISTEN1_PROVIDER_CONFIG[provider].idPrefix;
+  if (!provider || !id) return '';
+  return id.indexOf(prefix) === 0 ? id : prefix + id.replace(/^(kwtrack_|kgtrack_|mgtrack_)/, '');
+}
+
+function normalizeListen1Quality(value) {
+  const q = normalizeQualityPreference(value);
+  if (q === 'jymaster' || q === 'hires' || q === 'lossless') return 'lossless';
+  if (q === 'exhigh') return 'exhigh';
+  return 'standard';
+}
+
+function listen1RequestHeaders(provider, extra) {
+  const headers = { 'User-Agent': UA, ...(extra || {}) };
+  if (provider === 'kuwo') headers.Referer = 'https://www.kuwo.cn/';
+  if (provider === 'kugou') {
+    headers.Referer = 'https://www.kugou.com/';
+    headers['User-Agent'] = MOBILE_UA;
+  }
+  if (provider === 'migu') {
+    headers.Referer = 'https://m.music.migu.cn/';
+    if (miguCookie) headers.Cookie = miguCookie;
+  }
+  return headers;
+}
+
+function kuwoSecret(message, password) {
+  if (!password) return '';
+  let n = '';
+  for (let i = 0; i < password.length; i++) n += password.charCodeAt(i).toString();
+  const r = Math.floor(n.length / 5);
+  const o = parseInt(n.charAt(r) + n.charAt(2 * r) + n.charAt(3 * r) + n.charAt(4 * r) + n.charAt(5 * r), 10);
+  const l = Math.ceil(password.length / 2);
+  const c = Math.pow(2, 31) - 1;
+  if (o < 2) return '';
+  let d = Math.round(1e9 * Math.random()) % 1e8;
+  n += d;
+  while (n.length > 10) n = (parseInt(n.substring(0, 10), 10) + parseInt(n.substring(10), 10)).toString();
+  n = (o * n + l) % c;
+  let f = '';
+  for (let i = 0; i < message.length; i++) {
+    const h = parseInt(message.charCodeAt(i) ^ Math.floor((n / c) * 255), 10);
+    f += h < 16 ? '0' + h.toString(16) : h.toString(16);
+    n = (o * n + l) % c;
+  }
+  d = d.toString(16);
+  while (d.length < 8) d = '0' + d;
+  return f + d;
+}
+
+async function getKuwoToken(force) {
+  const now = Date.now();
+  if (!force && kuwoTokenCache.value && kuwoTokenCache.expiresAt > now) return kuwoTokenCache.value;
+  const text = await requestText('https://www.kuwo.cn/', { headers: listen1RequestHeaders('kuwo') });
+  const matches = Array.from(String(text || '').matchAll(/Hm_Iuvt_cdb524f42f23cer9b268564v7y735ewrq2324=([^;'"<\s]+)/g));
+  const token = matches.length ? matches[matches.length - 1][1] : '';
+  kuwoTokenCache = { value: token, expiresAt: now + 20 * 60 * 1000 };
+  return token;
+}
+
+async function kuwoGetJSON(targetUrl, retry) {
+  const name = 'Hm_Iuvt_cdb524f42f23cer9b268564v7y735ewrq2324';
+  const token = await getKuwoToken(!!retry);
+  const headers = listen1RequestHeaders('kuwo', {
+    Secret: kuwoSecret(token, name),
+    Cookie: token ? `${name}=${token}` : '',
+  });
+  const json = await requestJson(targetUrl, { headers });
+  if (!retry && json && json.success === false) return kuwoGetJSON(targetUrl, true);
+  return json;
+}
+
+async function handleListen1KuwoSearch(keywords, limit) {
+  const pn = 0;
+  const targetUrl = `https://www.kuwo.cn/search/searchMusicBykeyWord?vipver=1&client=kt&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&mobi=1&issubtitle=1&show_copyright_off=1&pn=${pn}&rn=${Math.max(4, Math.min(limit || 8, 20))}&all=${encodeURIComponent(keywords)}`;
+  const json = await kuwoGetJSON(targetUrl);
+  const list = Array.isArray(json && json.abslist) ? json.abslist : [];
+  return list.map(item => mapListen1Song('kuwo', item)).filter(Boolean);
+}
+
+async function handleListen1KugouSearch(keywords, limit) {
+  const targetUrl = `https://songsearch.kugou.com/song_search_v2?keyword=${encodeURIComponent(keywords)}&page=1&pagesize=${Math.max(4, Math.min(limit || 8, 20))}`;
+  const json = await requestJson(targetUrl, { headers: listen1RequestHeaders('kugou') });
+  const list = json && json.data && Array.isArray(json.data.lists) ? json.data.lists : [];
+  return list.map(item => mapListen1Song('kugou', item)).filter(Boolean);
+}
+
+async function handleListen1MiguSearch(keywords, limit) {
+  const targetUrl = `https://app.u.nf.migu.cn/pc/resource/song/item/search/v1.0?text=${encodeURIComponent(keywords)}&pageNo=1&pageSize=${Math.max(4, Math.min(limit || 8, 20))}`;
+  const json = await requestJson(targetUrl, { headers: listen1RequestHeaders('migu') });
+  const list = Array.isArray(json) ? json : [];
+  return list.map(item => mapListen1Song('migu', item)).filter(Boolean);
+}
+
+async function handleListen1Search(provider, keywords, limit) {
+  provider = normalizeListen1Provider(provider);
+  keywords = String(keywords || '').trim();
+  if (!provider) return { provider: 'listen1', error: 'UNSUPPORTED_PROVIDER', songs: [] };
+  if (!keywords) return { provider: 'listen1', source: provider, songs: [] };
+  if (provider === 'kuwo') return { provider: 'listen1', source: provider, songs: await handleListen1KuwoSearch(keywords, limit) };
+  if (provider === 'kugou') return { provider: 'listen1', source: provider, songs: await handleListen1KugouSearch(keywords, limit) };
+  if (provider === 'migu') return { provider: 'listen1', source: provider, songs: await handleListen1MiguSearch(keywords, limit) };
+  return { provider: 'listen1', source: provider, songs: [] };
+}
+
+async function handleListen1KuwoSongUrl(id) {
+  const trackId = normalizeListen1TrackId('kuwo', id);
+  const songId = trackId.replace(/^kwtrack_/, '');
+  const targetUrl = `https://www.kuwo.cn/api/v1/www/music/playUrl?mid=${encodeURIComponent(songId)}&type=music&httpsStatus=1&reqId=&plat=web_www&from=`;
+  const json = await kuwoGetJSON(targetUrl);
+  const playUrl = json && json.data && json.data.url;
+  return playUrl ? {
+    provider: 'listen1',
+    source: 'kuwo',
+    platform: 'kuwo',
+    url: playUrl,
+    playable: true,
+    trial: false,
+    level: 'standard',
+    quality: '酷我音乐',
+  } : {
+    provider: 'listen1',
+    source: 'kuwo',
+    url: '',
+    playable: false,
+    reason: 'url_unavailable',
+    message: '酷我音乐没有返回可播放地址，可能受版权、地区或平台限制',
+  };
+}
+
+async function handleListen1KugouSongUrl(id) {
+  const trackId = normalizeListen1TrackId('kugou', id);
+  const hash = trackId.replace(/^kgtrack_/, '');
+  const targetUrl = `https://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=${encodeURIComponent(hash)}`;
+  const json = await requestJson(targetUrl, { headers: listen1RequestHeaders('kugou') });
+  const playUrl = json && json.url;
+  return playUrl ? {
+    provider: 'listen1',
+    source: 'kugou',
+    platform: 'kugou',
+    url: playUrl,
+    playable: true,
+    trial: false,
+    level: 'standard',
+    quality: json.bitRate ? `${json.bitRate}kbps` : '酷狗音乐',
+    br: Number(json.bitRate || 0) ? Number(json.bitRate) * 1000 : 0,
+  } : {
+    provider: 'listen1',
+    source: 'kugou',
+    url: '',
+    playable: false,
+    reason: 'url_unavailable',
+    message: '酷狗音乐没有返回可播放地址，可能受版权、地区或平台限制',
+  };
+}
+
+function miguToneFlag(quality, requestedQuality) {
+  const requested = normalizeListen1Quality(requestedQuality);
+  if (requested === 'standard') return 'PQ';
+  if (quality === '111111' && requested === 'lossless') return 'ZQ';
+  if (quality === '111100' && requested !== 'standard') return 'SQ';
+  if (requested === 'exhigh') return 'HQ';
+  return 'PQ';
+}
+
+async function handleListen1MiguSongUrl(id, contentId, quality, requestedQuality) {
+  const trackId = normalizeListen1TrackId('migu', id);
+  const copyrightId = trackId.replace(/^mgtrack_/, '');
+  const toneFlag = miguToneFlag(quality, requestedQuality);
+  const targetUrl = `https://app.c.nf.migu.cn/MIGUM3.0/strategy/pc/listen/v1.0?scene=&netType=01&resourceType=2&copyrightId=${encodeURIComponent(copyrightId)}&contentId=${encodeURIComponent(contentId || '')}&toneFlag=${encodeURIComponent(toneFlag)}`;
+  const json = await requestJson(targetUrl, {
+    headers: listen1RequestHeaders('migu', {
+      channel: '0146951',
+      uid: '1234',
+    }),
+  });
+  let playUrl = json && json.data && (json.data.url || json.data.playUrl);
+  if (playUrl && playUrl.startsWith('//')) playUrl = 'https:' + playUrl;
+  if (playUrl) playUrl = playUrl.replace(/\+/g, '%2B');
+  const bitrate = toneFlag === 'HQ' ? 320000 : (toneFlag === 'SQ' || toneFlag === 'ZQ' ? 999000 : 128000);
+  return playUrl ? {
+    provider: 'listen1',
+    source: 'migu',
+    platform: 'migu',
+    url: playUrl,
+    playable: true,
+    trial: false,
+    level: toneFlag === 'PQ' ? 'standard' : (toneFlag === 'HQ' ? 'exhigh' : 'lossless'),
+    quality: '咪咕音乐 ' + toneFlag,
+    br: bitrate,
+  } : {
+    provider: 'listen1',
+    source: 'migu',
+    url: '',
+    playable: false,
+    reason: 'url_unavailable',
+    message: '咪咕音乐没有返回可播放地址，可能受版权、地区或平台限制',
+  };
+}
+
+async function handleListen1SongUrl(provider, payload) {
+  payload = payload || {};
+  provider = normalizeListen1Provider(provider || payload.provider || payload.source || payload.listen1Source);
+  const id = payload.id || payload.listen1RawId || payload.rawId || '';
+  if (!provider) return { provider: 'listen1', url: '', playable: false, error: 'UNSUPPORTED_PROVIDER', message: '暂不支持该 Listen1 音源' };
+  if (!id) return { provider: 'listen1', source: provider, url: '', playable: false, error: 'MISSING_ID', message: '缺少 Listen1 歌曲 ID' };
+  if (provider === 'kuwo') return handleListen1KuwoSongUrl(id);
+  if (provider === 'kugou') return handleListen1KugouSongUrl(id);
+  if (provider === 'migu') return handleListen1MiguSongUrl(id, payload.contentId || payload.content_id, payload.quality, payload.requestedQuality || payload.qualityPreference);
+  return { provider: 'listen1', source: provider, url: '', playable: false, error: 'UNSUPPORTED_PROVIDER', message: '暂不支持该 Listen1 音源' };
+}
+
+function listen1SearchProvidersFor(song, requested) {
+  const existing = normalizeListen1Provider(song && (song.listen1Source || song.source));
+  const order = String(requested || '').split(',').map(normalizeListen1Provider).filter(Boolean);
+  ['kuwo', 'kugou', 'migu'].forEach(provider => {
+    if (order.indexOf(provider) < 0) order.push(provider);
+  });
+  if (existing) {
+    const idx = order.indexOf(existing);
+    if (idx > 0) {
+      order.splice(idx, 1);
+      order.unshift(existing);
+    }
+  }
+  return order;
+}
+
+function listen1ResolveQuery(song) {
+  const title = song && (song.name || song.title) || '';
+  const artist = song && (song.artist || (Array.isArray(song.artists) && song.artists[0] && song.artists[0].name) || '') || '';
+  return [title, artist].filter(Boolean).join(' ').trim();
+}
+
+function normalizeServerMatchText(value) {
+  return String(value || '').toLowerCase()
+    .replace(/[（(【\[].*?[）)】\]]/g, '')
+    .replace(/[\s·・\-.。,，、!?！？"'“”‘’_|/\\]+/g, '');
+}
+
+function serverArtistParts(song) {
+  const parts = [];
+  if (song && Array.isArray(song.artists)) song.artists.forEach(a => { if (a && a.name) parts.push(a.name); });
+  if (song && song.artist) String(song.artist).split(/\s*\/\s*|\s*,\s*|、|&| feat\.? | ft\.? /i).forEach(name => { if (name.trim()) parts.push(name.trim()); });
+  return parts.map(normalizeServerMatchText).filter(Boolean);
+}
+
+function serverSameTitleArtist(source, candidate) {
+  if (!source || !candidate) return false;
+  if (normalizeServerMatchText(source.name || source.title) !== normalizeServerMatchText(candidate.name || candidate.title)) return false;
+  const a = serverArtistParts(source);
+  const b = serverArtistParts(candidate);
+  if (!a.length || !b.length) return true;
+  return a.some(name => b.indexOf(name) >= 0 || b.some(other => name.indexOf(other) >= 0 || other.indexOf(name) >= 0));
+}
+
+function listen1CandidatePool(source, songs, max) {
+  const pool = [];
+  const seen = new Set();
+  const sourceTitle = normalizeServerMatchText(source && (source.name || source.title));
+  const add = item => {
+    if (!item) return;
+    const key = `${item.listen1Source || item.source || ''}:${item.listen1RawId || item.id || item.name || item.title || ''}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    pool.push(item);
+  };
+  (songs || []).filter(item => serverSameTitleArtist(source, item)).forEach(add);
+  (songs || []).filter(item => {
+    const title = normalizeServerMatchText(item && (item.name || item.title));
+    return sourceTitle && title && (title === sourceTitle || title.indexOf(sourceTitle) >= 0 || sourceTitle.indexOf(title) >= 0);
+  }).forEach(add);
+  return pool.slice(0, Math.max(1, Math.min(Number(max) || 4, 8)));
+}
+
+async function handleListen1Resolve(payload) {
+  payload = payload || {};
+  const song = payload.song && typeof payload.song === 'object' ? payload.song : payload;
+  const requestedQuality = payload.quality || payload.qualityPreference || '';
+  const tried = [];
+  const existingProvider = normalizeListen1Provider(song.listen1Source || song.source);
+  const existingId = song.listen1RawId || song.id || '';
+  if (existingProvider && existingId && !song.matchRequired) {
+    const direct = await handleListen1SongUrl(existingProvider, { ...song, id: existingId, requestedQuality });
+    tried.push({ provider: existingProvider, direct: true, playable: !!direct.url, reason: direct.reason || direct.error || '' });
+    if (direct && direct.url) return { ...direct, resolvedBy: 'direct', tried };
+  }
+  const query = payload.keywords || listen1ResolveQuery(song);
+  if (!query) return { provider: 'listen1', url: '', playable: false, error: 'MISSING_QUERY', message: '缺少可用于 Listen1 自动换源的歌名或歌手', tried };
+  const providers = listen1SearchProvidersFor(song, payload.providers);
+  for (const provider of providers) {
+    try {
+      const searchResult = await handleListen1Search(provider, query, payload.limit || 8);
+      const songs = searchResult.songs || [];
+      const candidatesToTry = listen1CandidatePool(song, songs, payload.maxCandidates || 4);
+      const entry = { provider, candidates: songs.length, triedCandidates: candidatesToTry.length, matched: candidatesToTry.length > 0 };
+      tried.push(entry);
+      for (const matched of candidatesToTry) {
+        const info = await handleListen1SongUrl(provider, { ...matched, requestedQuality });
+        entry.playable = !!(info && info.url);
+        entry.reason = info && (info.reason || info.error || '');
+        if (info && info.url) {
+          entry.matchedId = matched.id || matched.listen1RawId || '';
+          return {
+            ...info,
+            resolvedBy: 'search',
+            matchedSong: matched,
+            tried,
+          };
+        }
+      }
+    } catch (e) {
+      tried.push({ provider, error: e.message || String(e) });
+    }
+  }
+  return {
+    provider: 'listen1',
+    url: '',
+    playable: false,
+    reason: 'url_unavailable',
+    message: 'Listen1 自动换源没有找到当前可播放版本',
+    tried,
+  };
+}
+
+function collectListen1AuthCookies(input, picked) {
+  if (input == null) return picked;
+  if (typeof input === 'string') {
+    String(input).split(/\r?\n|;/).forEach(part => {
+      const idx = part.indexOf('=');
+      if (idx > 0) picked[String(part.slice(0, idx)).trim()] = String(part.slice(idx + 1)).trim();
+    });
+    return picked;
+  }
+  if (Array.isArray(input)) {
+    input.forEach(item => collectListen1AuthCookies(item, picked));
+    return picked;
+  }
+  if (typeof input === 'object') {
+    if (input.name && Object.prototype.hasOwnProperty.call(input, 'value')) {
+      picked[String(input.name).trim()] = String(input.value || '').trim();
+      return picked;
+    }
+    Object.keys(input).forEach(key => {
+      const value = input[key];
+      if (/cookie|cookies|auth|session|netease|qq|migu|music/i.test(key) || typeof value !== 'object') collectListen1AuthCookies(value, picked);
+      else collectListen1AuthCookies(value, picked);
+    });
+  }
+  return picked;
+}
+
+function cookieObjectToHeader(obj, names) {
+  return (names || Object.keys(obj || {}))
+    .filter(name => obj && obj[name])
+    .map(name => `${name}=${obj[name]}`)
+    .join('; ');
+}
+
+async function handleListen1AuthImport(payload) {
+  const cookies = collectListen1AuthCookies(payload, {});
+  const imported = [];
+  const neteaseHeader = cookieObjectToHeader(cookies, NETEASE_LOGIN_COOKIE_PRIORITY);
+  if (cookies.MUSIC_U && neteaseHeader) {
+    saveCookie(neteaseHeader);
+    imported.push('netease');
+  }
+  const qqHeader = cookieObjectToHeader(cookies, QQ_LOGIN_COOKIE_PRIORITY.concat(['music_key', 'p_uin']));
+  const qqObj = parseCookieString(qqHeader);
+  if (qqCookieUin(qqObj) && qqCookieMusicKey(qqObj)) {
+    saveQQCookie(normalizeQQCookieInput(qqHeader));
+    imported.push('qq');
+  }
+  const miguNames = [
+    'migu_music_sid', 'migu_music_platinum', 'migu_music_level', 'migu_music_nickname',
+    'migu_music_avatar', 'migu_music_uid', 'migu_music_passid', 'migu_music_status',
+    'USessionID', 'LTToken',
+  ];
+  const miguHeader = cookieObjectToHeader(cookies, miguNames);
+  if (miguHeader) {
+    saveMiguCookie(miguHeader);
+    imported.push('migu');
+  }
+  return {
+    provider: 'listen1',
+    ok: imported.length > 0,
+    imported,
+    message: imported.length
+      ? 'Listen1 登录态已导入: ' + imported.join(', ')
+      : '未在该文件中找到可导入的网易云或 QQ 音乐登录态',
   };
 }
 
@@ -3553,6 +4214,74 @@ const server = http.createServer(async (req, res) => {
     } catch (err) {
       console.error('[QQSongComments]', err);
       sendJSON(res, { provider: 'qq', error: err.message, comments: [] }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/listen1/search') {
+    try {
+      const provider = url.searchParams.get('provider') || url.searchParams.get('source') || '';
+      const kw = url.searchParams.get('keywords') || url.searchParams.get('q') || '';
+      const limit = Math.max(4, Math.min(20, parseInt(url.searchParams.get('limit') || '8', 10) || 8));
+      const data = await handleListen1Search(provider, kw, limit);
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[Listen1Search]', err);
+      sendJSON(res, { provider: 'listen1', error: err.message, songs: [] }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/listen1/song/url') {
+    try {
+      let body = {};
+      if (req.method === 'POST') body = await readRequestBody(req);
+      const provider = body.provider || body.source || body.listen1Source || url.searchParams.get('provider') || url.searchParams.get('source') || '';
+      const payload = {
+        ...body,
+        id: body.id || body.listen1RawId || url.searchParams.get('id') || url.searchParams.get('rawId') || '',
+        requestedQuality: body.quality || body.requestedQuality || url.searchParams.get('quality') || '',
+        contentId: body.contentId || body.content_id || url.searchParams.get('contentId') || '',
+      };
+      const data = await handleListen1SongUrl(provider, payload);
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[Listen1SongUrl]', err);
+      sendJSON(res, { provider: 'listen1', url: '', playable: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/listen1/resolve') {
+    try {
+      const body = req.method === 'POST' ? await readRequestBody(req) : {
+        keywords: url.searchParams.get('keywords') || '',
+        providers: url.searchParams.get('providers') || '',
+        quality: url.searchParams.get('quality') || '',
+        song: {
+          name: url.searchParams.get('name') || '',
+          artist: url.searchParams.get('artist') || '',
+          listen1Source: url.searchParams.get('provider') || '',
+          listen1RawId: url.searchParams.get('id') || '',
+        },
+      };
+      const data = await handleListen1Resolve(body);
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[Listen1Resolve]', err);
+      sendJSON(res, { provider: 'listen1', url: '', playable: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/listen1/auth/import') {
+    try {
+      const body = await readRequestBody(req);
+      const data = await handleListen1AuthImport(body);
+      sendJSON(res, data, data.ok ? 200 : 400);
+    } catch (err) {
+      console.error('[Listen1AuthImport]', err);
+      sendJSON(res, { provider: 'listen1', ok: false, error: err.message }, 500);
     }
     return;
   }

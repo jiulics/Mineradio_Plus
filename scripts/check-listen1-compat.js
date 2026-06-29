@@ -60,25 +60,35 @@ assert.strictEqual(first.id, 'listen1:myplaylist_a');
 assert.strictEqual(first.tracks.length, 3);
 
 const ne = first.tracks[0];
-assert.strictEqual(ne.provider, 'netease');
-assert.strictEqual(ne.source, 'netease');
-assert.strictEqual(ne.id, '12345');
+assert.strictEqual(ne.provider, 'listen1');
+assert.strictEqual(ne.source, 'listen1');
+assert.strictEqual(ne.type, 'listen1');
+assert.strictEqual(ne.id, 'netrack_12345');
 assert.strictEqual(ne.listen1Source, 'netease');
 assert.strictEqual(ne.listen1RawId, 'netrack_12345');
+assert.strictEqual(ne.matchRequired, false);
 assert.strictEqual(ne.url, undefined, 'stale Listen1 direct URL must be stripped');
 
 const qq = first.tracks[1];
-assert.strictEqual(qq.provider, 'qq');
-assert.strictEqual(qq.source, 'qq');
+assert.strictEqual(qq.provider, 'listen1');
+assert.strictEqual(qq.source, 'listen1');
+assert.strictEqual(qq.type, 'listen1');
+assert.strictEqual(qq.id, 'qqtrack_003abc');
+assert.strictEqual(qq.listen1Source, 'qq');
+assert.strictEqual(qq.listen1RawId, 'qqtrack_003abc');
 assert.strictEqual(qq.mid, '003abc');
 assert.strictEqual(qq.playable, false);
+assert.strictEqual(qq.matchRequired, false);
 
 const kg = first.tracks[2];
 assert.strictEqual(kg.provider, 'listen1');
 assert.strictEqual(kg.source, 'listen1');
 assert.strictEqual(kg.type, 'listen1');
 assert.strictEqual(kg.playable, false);
-assert.strictEqual(kg.matchRequired, true);
+assert.strictEqual(kg.listen1Source, 'kugou');
+assert.strictEqual(kg.listen1RawId, 'kgtrack_hash');
+assert.strictEqual(kg.matchRequired, false);
+assert.strictEqual(kg.unsupportedSource, undefined);
 assert.strictEqual(kg.url, undefined, 'unsupported Listen1 tracks must not keep direct URLs');
 
 const single = compat.parseListen1Backup(JSON.stringify(backup.myplaylist_a));

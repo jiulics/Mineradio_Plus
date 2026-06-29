@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.3
+
+- 修复 Home 返回后仍恢复右侧 3D 歌单详情/巨大歌单卡片的问题；Home 会清理旧的 pinned shelf 状态，默认不再显示歌单架。
+- 右上角 Home 与播放队列按钮保持常驻，账号胶囊自动隐藏不再把 Home/队列按钮一起藏掉。
+- 播放、天气电台和歌单详情播放不再强制弹出右侧歌单/队列界面；只有用户点击队列按钮时才显示右侧队列。
+- 3D 歌单架默认改为自动隐藏，避免首页和主视觉被歌单界面遮挡。
+- 更新 Listen1 自动换源桥接、QQ 歌单封面兜底、天气电台来源优先级和相关回归检查。
+
 ## v1.1.1
 
 - P0 installer safety fix: installation now defaults to the first available non-C drive from `D:\Mineradio` through `Z:\Mineradio`; it falls back to `C:\Mineradio` only when no D-Z drive exists.

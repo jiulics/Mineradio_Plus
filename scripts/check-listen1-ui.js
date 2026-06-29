@@ -24,8 +24,8 @@ mustContain(/searchPlayablePlatformSong\s*\(\s*song\s*,\s*\[\s*['"]netease['"]\s
 mustContain(/songProviderKey\(song\)\s*===\s*['"]listen1['"]/, 'Listen1 source tagging and playback guard');
 mustContain(/listen1-import-input/, 'hidden file input binding');
 
-assert(/导入时会丢弃备份中的旧播放直链/.test(readme), 'README must state Listen1 direct URLs are discarded');
-assert(/不会绕过限制/.test(readme), 'README must state platform restrictions are not bypassed');
+assert(/Listen1/.test(readme) && /listen1_backup\.json/.test(readme) && /旧播放直链|旧直链/.test(readme), 'README must state Listen1 direct URLs are discarded');
+assert(/不会绕过[\s\S]{0,120}(会员|版权|登录)/.test(readme), 'README must state platform restrictions are not bypassed');
 assert(/MIT License/.test(notice) && /Listen1/.test(notice), 'NOTICE must acknowledge Listen1 MIT references');
 
 console.log('listen1 UI integration checks passed');

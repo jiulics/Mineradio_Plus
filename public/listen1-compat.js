@@ -4,7 +4,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   var SUPPORTED_DIRECT_SOURCES = {
     netease: true,
-    qq: true
+    qq: true,
+    kuwo: true,
+    kugou: true,
+    migu: true
   };
 
   function asString(value) {
@@ -56,24 +59,76 @@
     };
 
     if (listen1Source === 'netease') {
+      var neId = rawId.indexOf('netrack_') === 0 ? rawId : ('netrack_' + stripPrefix(rawId, ['netrack_', 'ne']));
       return Object.assign({}, base, {
-        provider: 'netease',
-        source: 'netease',
-        type: 'song',
-        id: stripPrefix(rawId, ['netrack_', 'ne']),
+        provider: 'listen1',
+        source: 'listen1',
+        type: 'listen1',
+        id: neId,
+        listen1RawId: neId,
+        playable: false,
+        matchRequired: false,
       });
     }
 
     if (listen1Source === 'qq') {
-      var mid = stripPrefix(rawId, ['qqtrack_', 'qq']);
+      var qqId = rawId.indexOf('qqtrack_') === 0 ? rawId : ('qqtrack_' + stripPrefix(rawId, ['qqtrack_', 'qq']));
+      var mid = stripPrefix(qqId, ['qqtrack_', 'qq']);
       return Object.assign({}, base, {
-        provider: 'qq',
-        source: 'qq',
-        type: 'qq',
-        id: mid,
+        provider: 'listen1',
+        source: 'listen1',
+        type: 'listen1',
+        id: qqId,
+        listen1RawId: qqId,
         mid: mid,
         songmid: mid,
         playable: false,
+        matchRequired: false,
+      });
+    }
+
+    if (listen1Source === 'kuwo') {
+      var kwId = rawId.indexOf('kwtrack_') === 0 ? rawId : ('kwtrack_' + stripPrefix(rawId, ['kwtrack_', 'kw']));
+      return Object.assign({}, base, {
+        provider: 'listen1',
+        source: 'listen1',
+        type: 'listen1',
+        id: kwId,
+        listen1Source: 'kuwo',
+        listen1RawId: kwId,
+        playable: false,
+        matchRequired: false
+      });
+    }
+
+    if (listen1Source === 'kugou') {
+      var kgId = rawId.indexOf('kgtrack_') === 0 ? rawId : ('kgtrack_' + stripPrefix(rawId, ['kgtrack_', 'kg']));
+      return Object.assign({}, base, {
+        provider: 'listen1',
+        source: 'listen1',
+        type: 'listen1',
+        id: kgId,
+        listen1Source: 'kugou',
+        listen1RawId: kgId,
+        playable: false,
+        matchRequired: false
+      });
+    }
+
+    if (listen1Source === 'migu') {
+      var mgId = rawId.indexOf('mgtrack_') === 0 ? rawId : ('mgtrack_' + stripPrefix(rawId, ['mgtrack_', 'mg']));
+      return Object.assign({}, base, {
+        provider: 'listen1',
+        source: 'listen1',
+        type: 'listen1',
+        id: mgId,
+        listen1Source: 'migu',
+        listen1RawId: mgId,
+        contentId: asString(raw.content_id || raw.contentId),
+        songId: asString(raw.song_id || raw.songId),
+        quality: asString(raw.quality || raw.toneControl),
+        playable: false,
+        matchRequired: false
       });
     }
 

@@ -271,9 +271,9 @@ body.home-wallpaper-preview #canvas-container{filter:none}
 .home-weather-mood{margin-top:7px;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.58);max-width:420px}
 .home-weather-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .home-weather-stat{height:30px;padding:0 11px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.048);display:inline-flex;align-items:center;font-size:11px;font-weight:720;color:rgba(255,255,255,.64)}
-.home-weather-atmosphere{--weather-beat:0;--weather-bass:0;--weather-energy:0;position:relative;align-self:stretch;margin:22px 0 18px;min-height:112px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at calc(18% + var(--weather-energy) * 16%) 38%,color-mix(in srgb,var(--home-accent) calc(28% + var(--weather-beat) * 30%),transparent),transparent 34%),radial-gradient(circle at 78% 70%,rgba(255,83,103,calc(.10 + var(--weather-bass) * .22)),transparent 36%),linear-gradient(118deg,rgba(255,255,255,.085),rgba(255,255,255,.020));border:1px solid rgba(255,255,255,calc(.085 + var(--weather-beat) * .12));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px calc(42px + var(--weather-energy) * 42px) rgba(0,0,0,.24),0 0 calc(18px + var(--weather-beat) * 34px) color-mix(in srgb,var(--home-accent) calc(8% + var(--weather-beat) * 20%),transparent)}
-.home-weather-atmosphere::before{content:'';position:absolute;left:-12%;right:-12%;top:50%;height:calc(48px + var(--weather-bass) * 34px);transform:translateY(-50%) scaleY(calc(1 + var(--weather-beat) * .44));background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--home-accent) calc(46% + var(--weather-beat) * 26%),rgba(255,255,255,.72)) 0 calc(3px + var(--weather-energy) * 4px),transparent calc(3px + var(--weather-energy) * 4px) calc(13px + var(--weather-bass) * 12px));opacity:calc(.24 + var(--weather-energy) * .42);filter:blur(calc(.2px + var(--weather-bass) * 1.1px));animation:home-weather-wave 4.8s linear infinite}
-.home-weather-atmosphere::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,calc(.08 + var(--weather-beat) * .22)),transparent),linear-gradient(180deg,rgba(255,255,255,.070),transparent 42%,rgba(0,0,0,.34));transform:translateX(calc((var(--weather-energy) - .5) * 28px));pointer-events:none}
+.home-weather-atmosphere{--weather-beat:0;--weather-bass:0;--weather-energy:0;position:relative;align-self:stretch;margin:20px 0 14px;min-height:122px;border-radius:16px;overflow:hidden;background:radial-gradient(circle at calc(16% + var(--weather-energy) * 18%) 36%,color-mix(in srgb,var(--home-accent) calc(18% + var(--weather-beat) * 22%),transparent),transparent 34%),linear-gradient(118deg,rgba(255,255,255,.070),rgba(255,255,255,.020) 54%,rgba(0,0,0,.20));border:1px solid rgba(255,255,255,calc(.080 + var(--weather-beat) * .10));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 16px calc(36px + var(--weather-energy) * 28px) rgba(0,0,0,.22)}
+.home-weather-atmosphere::before{content:'';position:absolute;left:18px;right:18px;top:50%;height:calc(42px + var(--weather-bass) * 26px);transform:translateY(-50%) scaleY(calc(1 + var(--weather-beat) * .34));background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--home-accent) calc(34% + var(--weather-beat) * 20%),rgba(255,255,255,.54)) 0 calc(2px + var(--weather-energy) * 3px),transparent calc(2px + var(--weather-energy) * 3px) calc(16px + var(--weather-bass) * 10px));opacity:calc(.14 + var(--weather-energy) * .26);filter:blur(calc(.35px + var(--weather-bass) * .9px));animation:home-weather-wave 5.4s linear infinite}
+.home-weather-atmosphere::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,calc(.055 + var(--weather-beat) * .16)),transparent),linear-gradient(180deg,rgba(255,255,255,.050),transparent 46%,rgba(0,0,0,.30));transform:translateX(calc((var(--weather-energy) - .5) * 22px));pointer-events:none}
 @keyframes home-weather-wave{to{transform:translate(96px,-50%) scaleY(calc(1 + var(--weather-beat) * .44))}}
 .home-weather-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
 .home-quick-row{grid-column:1;position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
@@ -292,8 +292,10 @@ body.home-wallpaper-preview #canvas-container{filter:none}
 .home-eq{display:none}
 .home-eq span{display:block;flex:1;min-width:5px;height:var(--h,28px);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.94),var(--bar,#ff5367));box-shadow:0 0 18px color-mix(in srgb,var(--bar,#ff5367) 52%,transparent);animation:home-eq-rise 1.8s ease-in-out infinite;animation-delay:var(--d,0s)}
 .home-radio-badge{display:none}
-.home-wave-track{position:absolute;left:0;right:0;top:50%;height:44px;display:flex;align-items:center;gap:4px;opacity:.94;mix-blend-mode:screen;transform:translateY(-50%)}
-.home-wave-track span{flex:1;min-width:3px;border-radius:999px;background:linear-gradient(180deg,#fff,var(--home-accent));box-shadow:0 0 12px color-mix(in srgb,var(--home-accent) 55%,transparent);height:5px;transform-origin:bottom;transition:height .08s linear,opacity .08s linear}
+.home-wave-track{position:absolute;left:22px;right:22px;top:50%;height:68px;display:flex;align-items:center;gap:5px;opacity:.92;mix-blend-mode:screen;transform:translateY(-50%);z-index:2}
+.home-wave-track span{flex:1;min-width:3px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.90),var(--home-accent));box-shadow:0 0 10px color-mix(in srgb,var(--home-accent) 48%,transparent);height:5px;transform-origin:center;transition:height .08s linear,opacity .08s linear}
+.home-wave-track::before,.home-wave-track::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--home-accent) 70%,rgba(255,255,255,.42)),transparent);opacity:.48;pointer-events:none}
+.home-wave-track::after{transform:translateY(15px);opacity:.20}
 @keyframes home-disc-turn{to{transform:rotate(360deg)}}
 @keyframes home-eq-rise{0%,100%{transform:scaleY(.68);opacity:.66}45%{transform:scaleY(1);opacity:1}}
 .home-mosaic{grid-column:1 / -1;grid-row:5;align-self:end;display:grid;grid-template-columns:1.18fr .82fr;grid-template-rows:1fr 1fr;gap:10px;height:min(216px,26vh);min-height:150px;margin-top:18px}
@@ -306,14 +308,14 @@ body.home-wallpaper-preview #canvas-container{filter:none}
 .home-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;min-height:38px}
 .home-section-title{font-size:13px;font-weight:760;color:rgba(255,255,255,.84);letter-spacing:.04em}
 .home-section-note{font-size:11px;color:rgba(255,255,255,.38);white-space:nowrap}
-.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.home-card{--tone-a:#00f5d4;--tone-b:#2442ff;--tone-c:#f8f4ee;position:relative;min-height:152px;border:1px solid color-mix(in srgb,var(--home-accent) 10%,rgba(255,255,255,.085));border-radius:22px;background:linear-gradient(142deg,rgba(18,21,26,.66),rgba(8,9,13,.76));box-shadow:0 20px 64px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.060);backdrop-filter:blur(24px) saturate(1.12);-webkit-backdrop-filter:blur(24px) saturate(1.12);padding:17px;overflow:hidden;color:#fff;text-align:left;font-family:inherit;cursor:pointer;transition:transform .22s cubic-bezier(.16,1,.3,1),border-color .22s,background .22s,box-shadow .22s}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-self:stretch}
+.home-card{--tone-a:#00f5d4;--tone-b:#2442ff;--tone-c:#f8f4ee;position:relative;min-height:154px;border:1px solid color-mix(in srgb,var(--home-accent) 10%,rgba(255,255,255,.085));border-radius:18px;background:linear-gradient(142deg,rgba(18,21,26,.62),rgba(8,9,13,.76));box-shadow:0 18px 54px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.060);backdrop-filter:blur(22px) saturate(1.10);-webkit-backdrop-filter:blur(22px) saturate(1.10);padding:17px;overflow:hidden;color:#fff;text-align:left;font-family:inherit;cursor:pointer;transition:transform .22s cubic-bezier(.16,1,.3,1),border-color .22s,background .22s,box-shadow .22s}
 .home-card[data-home-tone="mix"]{--tone-a:#9db8cf;--tone-b:#00f5d4;--tone-c:#2442ff}
 .home-card[data-home-tone="local"]{--tone-a:#f8f4ee;--tone-b:#00f5d4;--tone-c:#2442ff}
 .home-card[data-home-tone="library"]{--tone-a:#00f5d4;--tone-b:#f8f4ee;--tone-c:#2442ff}
 .home-card::before{content:'';position:absolute;inset:0;background:linear-gradient(118deg,color-mix(in srgb,var(--tone-a) 22%,transparent),transparent 38%,color-mix(in srgb,var(--tone-b) 16%,transparent) 74%,transparent),linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 38px);opacity:.86;pointer-events:none}
 .home-card::after{content:'';position:absolute;right:114px;bottom:18px;width:38px;height:70px;border-radius:999px;background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--tone-c) 64%,rgba(255,255,255,.26)) 0 4px,transparent 4px 10px);opacity:.20;transform:skewX(-10deg);pointer-events:none}
-.home-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--tone-a) 42%,rgba(255,255,255,.18));background:linear-gradient(142deg,rgba(36,33,39,.72),rgba(10,10,14,.84));box-shadow:0 28px 84px rgba(0,0,0,.36),0 0 34px color-mix(in srgb,var(--tone-a) 16%,transparent),inset 0 1px 0 rgba(255,255,255,.085)}
+.home-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--tone-a) 38%,rgba(255,255,255,.18));background:linear-gradient(142deg,rgba(36,33,39,.68),rgba(10,10,14,.84));box-shadow:0 24px 70px rgba(0,0,0,.32),0 0 28px color-mix(in srgb,var(--tone-a) 12%,transparent),inset 0 1px 0 rgba(255,255,255,.085)}
 body.empty-home-active .home-card{animation:home-card-float 7.4s ease-in-out infinite}
 body.empty-home-active .home-card:hover{animation:none}
 body.empty-home-active .home-card:nth-of-type(2){animation-delay:-1.4s}
@@ -330,15 +332,15 @@ body.empty-home-active .home-visual{animation:home-visual-drift 8.8s ease-in-out
 .home-card-art{position:absolute;z-index:1;right:13px;bottom:13px;width:108px;height:108px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--tone-a) 78%,#14141a),color-mix(in srgb,var(--tone-b) 68%,#09090d));background-size:cover;background-position:center;box-shadow:0 18px 50px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.16);transform:rotate(3deg);overflow:hidden}
 .home-card-art:not(.has-cover)::before{content:'';position:absolute;inset:18px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.16) 0 1px,transparent 1px 8px),conic-gradient(from 180deg,var(--tone-a),var(--tone-b),var(--tone-c),var(--tone-a));box-shadow:inset 0 0 0 14px rgba(5,5,8,.44),0 12px 28px rgba(0,0,0,.26)}
 .home-card-art::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.12),transparent 42%,rgba(0,0,0,.28));pointer-events:none}
-.home-rail{align-self:stretch;min-height:0;display:grid;grid-template-rows:auto 1fr;gap:12px}
+.home-rail{align-self:end;min-height:0;display:grid;grid-template-rows:auto auto;gap:10px}
 .home-tile-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;min-height:0}
-.home-tile{--tone-a:#00f5d4;--tone-b:#2442ff;--tone-c:#f8f4ee;position:relative;min-width:0;min-height:166px;border:1px solid color-mix(in srgb,var(--home-accent) 9%,rgba(255,255,255,.075));border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.060),rgba(255,255,255,.025));box-shadow:0 16px 50px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.052);backdrop-filter:blur(20px) saturate(1.10);-webkit-backdrop-filter:blur(20px) saturate(1.10);padding:10px;color:#fff;text-align:left;font-family:inherit;cursor:pointer;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;overflow:hidden}
+.home-tile{--tone-a:#00f5d4;--tone-b:#2442ff;--tone-c:#f8f4ee;position:relative;min-width:0;min-height:132px;border:1px solid color-mix(in srgb,var(--home-accent) 8%,rgba(255,255,255,.070));border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.050),rgba(255,255,255,.022));box-shadow:0 12px 34px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.046);backdrop-filter:blur(18px) saturate(1.08);-webkit-backdrop-filter:blur(18px) saturate(1.08);padding:9px;color:#fff;text-align:left;font-family:inherit;cursor:pointer;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;overflow:hidden}
 .home-tile[data-home-tone="search"],.home-tile[data-home-tone="playlist"]{--tone-a:#9db8cf;--tone-b:#00f5d4;--tone-c:#2442ff}
 .home-tile[data-home-tone="local"],.home-tile[data-home-tone="podcast"]{--tone-a:#f8f4ee;--tone-b:#00f5d4;--tone-c:#2442ff}
 .home-tile[data-home-tone="guide"],.home-tile[data-home-tone="library"]{--tone-a:#00f5d4;--tone-b:#f8f4ee;--tone-c:#2442ff}
-.home-tile::before{content:'';position:absolute;left:10px;right:10px;top:10px;height:92px;border-radius:15px;background:linear-gradient(135deg,color-mix(in srgb,var(--tone-a) 12%,transparent),transparent 48%,color-mix(in srgb,var(--tone-b) 10%,transparent));opacity:.9;pointer-events:none}
+.home-tile::before{content:'';position:absolute;left:9px;right:9px;top:9px;height:70px;border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--tone-a) 10%,transparent),transparent 48%,color-mix(in srgb,var(--tone-b) 8%,transparent));opacity:.8;pointer-events:none}
 .home-tile:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--tone-a) 36%,rgba(255,255,255,.18));background:rgba(255,255,255,.068);box-shadow:0 22px 62px rgba(0,0,0,.28),0 0 26px color-mix(in srgb,var(--tone-a) 12%,transparent)}
-.home-tile-cover{position:relative;width:100%;height:92px;border-radius:15px;background:linear-gradient(135deg,color-mix(in srgb,var(--tone-a) 74%,#16161b),color-mix(in srgb,var(--tone-b) 58%,#08090d));background-size:cover;background-position:center;box-shadow:0 14px 34px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.14);margin-bottom:10px;overflow:hidden}
+.home-tile-cover{position:relative;width:100%;height:70px;border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--tone-a) 74%,#16161b),color-mix(in srgb,var(--tone-b) 58%,#08090d));background-size:cover;background-position:center;box-shadow:0 12px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.12);margin-bottom:9px;overflow:hidden}
 .home-tile-cover:not(.has-cover)::before{content:'';position:absolute;left:12px;bottom:12px;width:54px;height:54px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.14) 0 1px,transparent 1px 7px),conic-gradient(from 180deg,var(--tone-a),var(--tone-b),var(--tone-c),var(--tone-a));box-shadow:inset 0 0 0 10px rgba(5,5,8,.42)}
 .home-tile-cover:not(.has-cover)::after{content:'';position:absolute;right:12px;top:14px;width:46px;height:48px;border-radius:999px;background:repeating-linear-gradient(0deg,rgba(255,255,255,.72) 0 3px,transparent 3px 9px);opacity:.32}
 .home-tile-title{font-size:12px;font-weight:720;color:rgba(255,255,255,.90);line-height:1.28;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -346,20 +348,26 @@ body.empty-home-active .home-visual{animation:home-visual-drift 8.8s ease-in-out
 .home-skeleton{position:relative;overflow:hidden}
 .home-skeleton::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-100%);animation:home-shimmer 1.5s ease-in-out infinite}
 @keyframes home-shimmer{100%{transform:translateX(100%)}}
-@media (max-width:1120px){#empty-home{width:calc(100vw - 48px)}.empty-home-shell{grid-template-columns:minmax(300px,.88fr) minmax(440px,1.12fr);gap:12px}.home-hero{padding:24px}.home-hero-inner{grid-template-columns:minmax(0,1.16fr) minmax(128px,.52fr);column-gap:14px}.home-title{font-size:clamp(30px,4vw,48px);max-width:340px}.home-sub{font-size:12.5px;line-height:1.5;max-width:314px}.home-visual{height:198px;max-width:236px}.home-mosaic{height:142px;min-height:126px;margin-top:14px}.home-grid{gap:10px}.home-card{min-height:126px;padding:14px;border-radius:20px}.home-card-label{margin-bottom:6px}.home-card-title{font-size:16.5px;max-width:66%}.home-card-sub{margin-top:6px;font-size:10.8px;line-height:1.34;max-width:64%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.home-card-art{right:11px;bottom:11px;width:80px;height:80px;border-radius:18px}.home-card-art:not(.has-cover)::before{inset:14px;box-shadow:inset 0 0 0 11px rgba(5,5,8,.44),0 10px 24px rgba(0,0,0,.24)}.home-card::after{right:88px;bottom:14px;width:30px;height:56px}.home-rail{gap:8px}.home-tile{min-height:128px}.home-tile-cover{height:66px}}
-@media (max-height:760px){#empty-home{top:132px;bottom:44px}.empty-home-shell{min-height:0}.home-hero{min-height:0;padding:22px}.home-hero-inner{grid-template-columns:minmax(0,1.22fr) minmax(136px,.54fr);column-gap:14px}.home-title{font-size:clamp(31px,3.75vw,48px);max-width:360px}.home-sub{font-size:12.5px;line-height:1.55;max-width:330px}.home-quick-row{margin-top:16px}.home-visual{height:206px;max-width:246px}.home-mosaic{height:132px;min-height:120px;margin-top:14px}.home-card{min-height:134px;padding:14px}.home-card-title{font-size:17px}.home-card-art{width:92px;height:92px;border-radius:21px}.home-tile{min-height:132px}.home-tile-cover{height:72px}}
-@media (max-height:700px){#empty-home{top:126px;bottom:34px}.home-hero{padding:20px}.home-title{font-size:clamp(28px,3.55vw,42px)}.home-sub{font-size:12px;line-height:1.42}.home-weather-meta{margin-top:12px}.home-quick-row{margin-top:12px}.home-visual{height:174px;max-width:216px}.home-mosaic{height:112px;min-height:104px}.home-card{min-height:112px;padding:12px}.home-card-title{font-size:15.5px}.home-card-sub{font-size:10.5px;line-height:1.28;-webkit-line-clamp:2}.home-card-art{width:70px;height:70px;border-radius:16px}.home-card::after{right:78px;height:48px}.home-tile{min-height:112px;padding:9px}.home-tile-cover{height:54px;margin-bottom:8px}.home-section-head{min-height:30px}}
-@media (max-height:760px){.home-weather-status{margin-bottom:14px}.home-clock-time{font-size:clamp(48px,7vw,78px)}.home-clock-date{font-size:12px}.home-weather-summary{margin-top:14px}.home-weather-atmosphere{min-height:68px;margin:14px 0}.home-weather-stats{margin-top:14px}}
+@media (max-width:1120px){#empty-home{width:calc(100vw - 48px)}.empty-home-shell{grid-template-columns:minmax(300px,.88fr) minmax(440px,1.12fr);gap:12px}.home-hero{padding:24px}.home-hero-inner{grid-template-columns:minmax(0,1.16fr) minmax(128px,.52fr);column-gap:14px}.home-title{font-size:clamp(30px,4vw,48px);max-width:340px}.home-sub{font-size:12.5px;line-height:1.5;max-width:314px}.home-visual{height:198px;max-width:236px}.home-mosaic{height:142px;min-height:126px;margin-top:14px}.home-grid{gap:10px}.home-card{min-height:140px;padding:14px;border-radius:18px}.home-card-label{margin-bottom:6px}.home-card-title{font-size:16.5px;max-width:66%}.home-card-sub{margin-top:6px;font-size:10.8px;line-height:1.34;max-width:64%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.home-card-art{right:11px;bottom:11px;width:80px;height:80px;border-radius:18px}.home-card-art:not(.has-cover)::before{inset:14px;box-shadow:inset 0 0 0 11px rgba(5,5,8,.44),0 10px 24px rgba(0,0,0,.24)}.home-card::after{right:88px;bottom:14px;width:30px;height:56px}.home-rail{gap:8px}.home-tile{min-height:112px}.home-tile-cover{height:58px}}
+@media (max-height:760px){#empty-home{top:132px;bottom:44px}.empty-home-shell{min-height:0}.home-hero{min-height:0;padding:22px}.home-hero-inner{grid-template-columns:minmax(0,1.22fr) minmax(136px,.54fr);column-gap:14px}.home-title{font-size:clamp(31px,3.75vw,48px);max-width:360px}.home-sub{font-size:12.5px;line-height:1.55;max-width:330px}.home-quick-row{margin-top:16px}.home-visual{height:206px;max-width:246px}.home-mosaic{height:132px;min-height:120px;margin-top:14px}.home-card{min-height:132px;padding:14px}.home-card-title{font-size:17px}.home-card-art{width:88px;height:88px;border-radius:20px}.home-tile{min-height:108px}.home-tile-cover{height:56px}}
+@media (max-height:700px){#empty-home{top:126px;bottom:34px}.home-hero{padding:20px}.home-title{font-size:clamp(28px,3.55vw,42px)}.home-sub{font-size:12px;line-height:1.42}.home-weather-meta{margin-top:12px}.home-quick-row{margin-top:12px}.home-visual{height:174px;max-width:216px}.home-mosaic{height:112px;min-height:104px}.home-card{min-height:114px;padding:12px}.home-card-title{font-size:15.5px}.home-card-sub{font-size:10.5px;line-height:1.28;-webkit-line-clamp:2}.home-card-art{width:68px;height:68px;border-radius:15px}.home-card::after{right:76px;height:46px}.home-tile{min-height:96px;padding:8px}.home-tile-cover{height:46px;margin-bottom:7px}.home-section-head{min-height:28px}}
+@media (max-height:760px){.home-weather-status{margin-bottom:14px}.home-clock-time{font-size:clamp(48px,7vw,78px)}.home-clock-date{font-size:12px}.home-weather-summary{margin-top:14px}.home-weather-atmosphere{min-height:76px;margin:12px 0}.home-weather-stats{margin-top:14px}}
 @media (max-width:620px){.home-weather-status{align-items:flex-start;flex-direction:column;gap:6px}.home-clock-main{align-items:flex-start;flex-direction:column;gap:6px}.home-clock-time{font-size:clamp(48px,16vw,76px)}.home-clock-date{max-width:none;padding-bottom:0}.home-weather-summary{grid-template-columns:1fr}.home-weather-temp{font-size:46px}.home-weather-actions{gap:7px}.home-weather-actions .home-chip{height:30px;padding:0 10px;font-size:11px}}
 @media (max-width:840px){.empty-home-shell{grid-template-columns:minmax(250px,.86fr) minmax(360px,1.14fr)}.home-hero-inner{grid-template-columns:minmax(0,1fr)}.home-visual{display:none}.home-mosaic{height:124px;min-height:108px}.home-card{min-height:108px}.home-card-title{font-size:15px;max-width:68%}.home-card-sub{font-size:10.3px;max-width:62%}.home-card-art{width:66px;height:66px;border-radius:15px}.home-card::after{right:72px;width:24px;height:44px}.home-tile-title{font-size:11.5px}}
 @media (max-width:760px){#empty-home{top:150px;bottom:56px;width:calc(100vw - 40px)}.empty-home-shell{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;overflow:auto;padding-bottom:4px}.home-hero{grid-row:auto;min-height:344px}.home-mosaic{height:172px;min-height:150px}.home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-tile-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
 body.empty-home-active.controls-visible #empty-home{bottom:128px}
+body.playback-queue-side-active.empty-home-active .empty-home-shell{grid-template-columns:minmax(430px,.58fr) minmax(520px,.42fr)}
+body.playback-queue-side-active.empty-home-active .home-grid,
+body.playback-queue-side-active.empty-home-active .home-rail{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(24px) scale(.98);transition:opacity .24s ease,transform .28s cubic-bezier(.16,1,.3,1),visibility 0s linear .24s}
+body.playback-queue-side-active.empty-home-active .home-hero{max-width:650px}
+body.playback-queue-side-active.empty-home-active #empty-home{z-index:3}
 @media (max-height:760px){body.empty-home-active.controls-visible #empty-home{bottom:112px}}
 @media (max-width:620px){#empty-home{top:146px;bottom:44px;width:calc(100vw - 24px)}.home-hero{padding:20px;border-radius:22px}.home-hero-inner{display:flex;flex-direction:column}.home-visual{display:none}.home-mosaic{display:none}.home-grid{grid-template-columns:1fr}.home-tile-row{grid-template-columns:repeat(2,minmax(0,1fr))}.home-tile-cover{height:auto;aspect-ratio:1}.home-tile-sub{display:block}.home-card-art{width:88px;height:88px}.home-card-title,.home-card-sub{max-width:68%}}
 .home-visual.generated{height:74px!important;max-width:300px!important;align-self:center!important}
 @media (max-height:760px){.home-visual.generated{height:64px!important;max-width:260px!important}}
 
 /* ---------- 顶部右侧按钮 ---------- */
+
 #top-right{position:fixed;z-index:10;top:24px;right:24px;display:flex;align-items:center;gap:10px}
 .icon-btn{width:44px;height:44px;border:1px solid rgba(255,255,255,0.08);border-radius:50%;background:rgba(255,255,255,0.035);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:rgba(255,255,255,0.55);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-family:inherit;padding:0}
 .icon-btn:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18);color:#fff;transform:scale(1.04)}
@@ -385,9 +393,9 @@ body.desktop-shell.desktop-fullscreen #upload-actions{margin-top:0}
 .user-capsule-hide-btn{width:18px;height:28px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:rgba(255,255,255,.34);font-size:11px;line-height:1;opacity:0;transform:translateX(6px) scale(.92);transition:opacity .18s,transform .18s,background .18s,color .18s,border-color .18s;cursor:pointer}
 #top-right:hover .user-capsule-hide-btn,.user-capsule-hide-btn.on{opacity:1;transform:translateX(0) scale(1)}
 .user-capsule-hide-btn:hover,.user-capsule-hide-btn.on{border-color:rgba(var(--fc-accent-rgb),.34);background:rgba(var(--fc-accent-rgb),.10);color:#fff}
-body.user-capsule-auto-hide #top-right{right:-96px;opacity:0;visibility:hidden;pointer-events:none;transition:right .28s cubic-bezier(.16,1,.3,1),opacity .18s,visibility 0s linear .18s,transform .24s}
-body.user-capsule-auto-hide #top-right:hover,body.user-capsule-auto-hide.user-capsule-peek #top-right{right:18px;opacity:1;visibility:visible;pointer-events:auto;transition:right .28s cubic-bezier(.16,1,.3,1),opacity .16s,transform .24s}
-body.user-capsule-auto-hide #top-right::before{content:'';position:absolute;right:100%;top:-18px;width:82px;height:80px}
+body.user-capsule-auto-hide #user-btn{max-width:0;min-width:0;width:0;padding-left:0;padding-right:0;margin-left:-10px;opacity:0;transform:translateX(14px) scale(.92);pointer-events:none;overflow:hidden;border-color:rgba(255,255,255,0)}
+body.user-capsule-auto-hide.user-capsule-peek #user-btn,body.user-capsule-auto-hide #top-right:hover #user-btn{max-width:116px;min-width:58px;width:auto;padding-left:16px;padding-right:16px;margin-left:0;opacity:1;transform:translateX(0) scale(1);pointer-events:auto;border-color:rgba(255,255,255,0.08)}
+body.user-capsule-auto-hide #top-right::before{content:'';position:absolute;right:-14px;top:-18px;width:138px;height:80px;pointer-events:auto}
 #home-btn{width:44px;min-width:44px;border-color:rgba(0,245,212,.18);background:rgba(255,255,255,.04);color:rgba(232,236,239,.78)}
 #home-btn:hover{border-color:rgba(0,245,212,.44);background:rgba(0,245,212,.075);color:#fff;box-shadow:0 14px 38px rgba(0,245,212,.08)}
 body.empty-home-active #home-btn{border-color:rgba(255,83,103,.36);background:rgba(255,83,103,.11);color:#fff}
@@ -420,15 +428,15 @@ body.desktop-shell.desktop-fullscreen .home-mosaic-cell.has-cover,html:fullscree
   body.desktop-shell .home-visual{height:190px;max-width:226px}
   body.desktop-shell .home-mosaic{height:132px;min-height:116px;margin-top:14px}
   body.desktop-shell .home-grid{gap:10px}
-  body.desktop-shell .home-card{min-height:122px;padding:14px}
+  body.desktop-shell .home-card{min-height:132px;padding:14px}
   body.desktop-shell .home-card-label{margin-bottom:6px}
   body.desktop-shell .home-card-title{font-size:16px;max-width:66%}
   body.desktop-shell .home-card-sub{margin-top:6px;font-size:10.6px;line-height:1.32;max-width:64%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   body.desktop-shell .home-card-art{right:11px;bottom:11px;width:78px;height:78px;border-radius:18px}
   body.desktop-shell .home-card::after{right:86px;bottom:14px;width:30px;height:54px}
   body.desktop-shell .home-rail{gap:8px}
-  body.desktop-shell .home-tile{min-height:120px}
-  body.desktop-shell .home-tile-cover{height:62px}
+  body.desktop-shell .home-tile{min-height:104px}
+  body.desktop-shell .home-tile-cover{height:52px}
 }
 @media (max-height:700px){
   body.desktop-shell #empty-home{top:106px;bottom:30px}
@@ -439,13 +447,13 @@ body.desktop-shell.desktop-fullscreen .home-mosaic-cell.has-cover,html:fullscree
   body.desktop-shell .home-quick-row{margin-top:12px}
   body.desktop-shell .home-visual{height:166px;max-width:206px}
   body.desktop-shell .home-mosaic{height:104px;min-height:98px}
-  body.desktop-shell .home-card{min-height:104px;padding:12px}
+  body.desktop-shell .home-card{min-height:112px;padding:12px}
   body.desktop-shell .home-card-title{font-size:15px}
   body.desktop-shell .home-card-sub{font-size:10.2px;line-height:1.28}
   body.desktop-shell .home-card-art{width:66px;height:66px;border-radius:15px}
   body.desktop-shell .home-card::after{right:72px;width:24px;height:44px}
-  body.desktop-shell .home-tile{min-height:104px;padding:9px}
-  body.desktop-shell .home-tile-cover{height:50px;margin-bottom:8px}
+  body.desktop-shell .home-tile{min-height:92px;padding:8px}
+  body.desktop-shell .home-tile-cover{height:44px;margin-bottom:7px}
   body.desktop-shell .home-section-head{min-height:28px}
 }
 @media (max-width:840px){
@@ -1983,7 +1991,9 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
           <span class="home-weather-stat">湿度 --%</span>
           <span class="home-weather-stat">风速 -- km/h</span>
         </div>
-        <div class="home-weather-atmosphere" aria-hidden="true"></div>
+        <div class="home-weather-atmosphere" aria-hidden="true">
+          <div class="home-wave-track" id="home-wave-track"></div>
+        </div>
         <div class="home-weather-actions">
           <button class="home-chip" type="button" onclick="locateWeatherRadio()">重新定位</button>
           <button class="home-chip" type="button" onclick="changeWeatherCity()">更换城市</button>
@@ -2018,18 +2028,6 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
         <div class="home-card-sub" id="home-continue-sub">最近播放会出现在这里</div>
         <div class="home-card-art" id="home-continue-art"></div>
       </button>
-      <button class="home-card" data-home-tone="local" type="button" onclick="openHomeInsight()">
-        <div class="home-card-label">Profile</div>
-        <div class="home-card-title" id="home-profile-title">听歌画像</div>
-        <div class="home-card-sub" id="home-profile-sub">播放几首后生成偏好</div>
-        <div class="home-card-art" id="home-profile-art"></div>
-      </button>
-      <button class="home-card" data-home-tone="local" type="button" onclick="playHomeSong(2)">
-        <div class="home-card-label">Song</div>
-        <div class="home-card-title" id="home-library-title">常听歌手</div>
-        <div class="home-card-sub" id="home-library-sub">你的偏好会在这里汇总</div>
-        <div class="home-card-art" id="home-library-art"></div>
-      </button>
     </div>
 
     <div class="home-rail">
@@ -2044,6 +2042,9 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
 
 <!-- 顶部右侧 (只保留用户) -->
 <div id="top-right">
+  <button id="queue-visibility-btn" class="icon-btn" onclick="togglePlaybackQueueSideVisibility()" title="显示/隐藏播放队列" aria-label="显示/隐藏播放队列">
+    <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+  </button>
   <button id="user-capsule-hide-btn" class="user-capsule-hide-btn" type="button" onclick="toggleUserCapsuleAutoHide(event)" title="自动隐藏账号胶囊">‹</button>
   <button id="home-btn" class="icon-btn" onclick="goHome()" title="回到 Home" aria-label="回到 Home">
     <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8"/><path d="M5 10v10h14V10"/><path d="M9.5 20v-5h5v5"/></svg>
@@ -2346,6 +2347,7 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
       <div class="queue-chip">登录歌单 / Listen1 导入</div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button class="fx-mini-btn ghost" onclick="triggerListen1Import()" style="height:26px;padding:0 10px;font-size:11px">导入 Listen1</button>
+        <button class="fx-mini-btn ghost" onclick="triggerListen1AuthImport()" style="height:26px;padding:0 10px;font-size:11px">导入登录</button>
         <button class="fx-mini-btn ghost" onclick="refreshUserPlaylists(true)" style="height:26px;padding:0 10px;font-size:11px">刷新</button>
       </div>
     </div>
@@ -2360,7 +2362,6 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
   </div>
 </div>
 
-<!-- 试听提醒 -->
 <div id="trial-banner">
   <svg class="ic" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
   <span id="trial-text">仅播放试听片段</span>
@@ -2515,6 +2516,7 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
 
 <input type="file" id="file-input" accept=".mp3,.flac,.wav,.ogg,.m4a,.jpg,.jpeg,.png,.webp" multiple style="display:none">
 <input type="file" id="listen1-import-input" accept=".json,application/json" style="display:none">
+<input type="file" id="listen1-auth-import-input" accept=".json,.txt,application/json,text/plain" style="display:none">
 <input type="file" id="background-image-input" accept=".jpg,.jpeg,.png,.webp,.mp4,.webm,.mov,image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime" style="display:none">
 <div id="drop-overlay"><div class="drop-text">拖放音乐或封面</div></div>
 <div id="free-camera-hint"><b>自由镜头</b> R 固定/退出 · WASD 移动 · 鼠标转向 · Shift 加速 · Space/Ctrl 升降 · Q/E 轻微旋转 · 滚轮景深 · K 回正</div>
@@ -2751,6 +2753,8 @@ var lastStrongDrop = 0;           // 用于 burst 预设的强 drop 时刻
 
 var lyricsLines = [], lyricsVisible = false, lyricsHasNativeKaraoke = false, lyricsTimingSource = 'none';
 var playlist = [], playQueue = [], currentIdx = -1, playing = false, playToggleBusy = false;
+var playbackQueueSideActive = false;
+var playbackQueueSideUserHidden = false;
 var searchMode = 'song', podcastResults = [], podcastPrograms = [], podcastCurrentRadio = null;
 var loginStatus = { loggedIn: false, vipType: 0, vipLevel: 'none', isVip: false, isSvip: false, vipLabel: '无VIP' };
 var qqLoginStatus = { provider: 'qq', loggedIn: false, preview: false, nickname: 'QQ 音乐', userId: '', avatar: '', vipType: 0 };
@@ -3322,7 +3326,7 @@ var fxDefaults = {
   backCover: false,        // 旧的封面背面粒子层关闭；浮空粒子层会跟随封面翻转
   shelf: 'side',
   shelfCameraMode: 'static',
-  shelfPresence: 'always',
+  shelfPresence: 'auto',
   shelfShowPodcasts: false,
   shelfMergeCollections: false,
   shelfSize: 1,
@@ -3408,7 +3412,7 @@ var PACKAGED_DEFAULT_FX_SNAPSHOT = Object.freeze({
   backCover: false,
   shelf: 'side',
   shelfCameraMode: 'static',
-  shelfPresence: 'always',
+  shelfPresence: 'auto',
   shelfShowPodcasts: false,
   shelfMergeCollections: false,
   shelfSize: 1,
@@ -5188,6 +5192,7 @@ function shouldOffsetLyricsForShelfDetail() {
 }
 function shouldAvoidStageLyricsForShelf() {
   if (!shelfManager || !shelfManager.getMode || shelfManager.getMode() !== 'side') return false;
+  if (playbackQueueSideActive) return true;
   if (shelfAlwaysVisible()) return true;
   if (shelfPinnedOpen) return true;
   if (shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return true;
@@ -9121,11 +9126,11 @@ function updateStageLyrics3D(dt) {
     layoutX = clampRange(layoutX + (wallpaperShelfLyrics ? -1.34 : 0), -2.0, 2.0);
     layoutY = clampRange(layoutY + (wallpaperShelfLyrics ? -0.04 : 0.08), -1.2, 1.35);
     layoutZ = clampRange(layoutZ + (wallpaperShelfLyrics ? 1.02 : 1.15), -1.6, 1.6);
-  } else if (!skullMouthLyrics && shelfLyricAvoid && fx.lyricCameraLock) {
-    layoutScale *= 0.72;
-    layoutX = clampRange(layoutX - 1.36, -2.0, 2.0);
-    layoutY = clampRange(layoutY + 0.06, -1.2, 1.35);
-    layoutZ = clampRange(layoutZ + 0.72, -1.6, 1.6);
+  } else if (!skullMouthLyrics && shelfLyricAvoid && (fx.lyricCameraLock || playbackQueueSideActive)) {
+    layoutScale *= playbackQueueSideActive ? 0.60 : 0.72;
+    layoutX = clampRange(layoutX - (playbackQueueSideActive ? 1.74 : 1.36), -2.0, 2.0);
+    layoutY = clampRange(layoutY + (playbackQueueSideActive ? 0.12 : 0.06), -1.2, 1.35);
+    layoutZ = clampRange(layoutZ + (playbackQueueSideActive ? 0.92 : 0.72), -1.6, 1.6);
   } else if (!skullMouthLyrics && shouldOffsetLyricsForShelfDetail()) {
     layoutScale *= normalShelfDetailOpen ? 0.56 : 0.70;
     layoutX = clampRange(layoutX - (normalShelfDetailOpen ? 1.78 : 1.58), -2.0, 2.0);
@@ -13093,12 +13098,21 @@ function makeShelfManager() {
     return source;
   }
 
+  function queueShelfItems() {
+    return playQueue.map(function(song, idx){
+      return { type:'queue', title: song.name, sub: song.artist || '未知歌手',
+        cover: songCoverSrc(song, 360), tag: idx === currentIdx ? '正在播放' : ('#' + (idx+1)), queueIndex: idx };
+    });
+  }
+
   function currentItems() {
+    if (playbackQueueSideActive && !playbackQueueSideUserHidden && playQueue.length) return queueShelfItems();
     if (hasShelfLibrarySource() && (userPlaylists.length || myPodcastCollections.length)) {
       var source = activePlaylists();
       var items = source.map(function(pl){
         var provider = pl.provider === 'listen1' ? 'listen1' : (pl.provider === 'qq' ? 'qq' : 'netease');
         var sourceLabel = provider === 'listen1' ? 'L1' : (provider === 'qq' ? 'QQ' : 'NE');
+        pl.cover = playlistCoverSrc(pl, 360) || pl.cover || '';
         return { type:'playlist', title: pl.name, sub:sourceLabel + ' · ' + (pl.trackCount||0)+' 首 · 播放 '+compactCount(pl.playCount||0),
           cover: pl.cover || '', tag: provider === 'listen1' ? 'Listen1 导入' : (pl.subscribed ? '收藏歌单' : '我的歌单'), playlistId: playlistPanelProviderId(provider, pl.id), provider: provider };
       });
@@ -13109,12 +13123,7 @@ function makeShelfManager() {
       }
       if (items.length) return items;
     }
-    if (playQueue.length) {
-      return playQueue.map(function(song, idx){
-        return { type:'queue', title: song.name, sub: song.artist || '未知歌手',
-          cover: songCoverSrc(song, 360), tag: idx === currentIdx ? '正在播放' : ('#' + (idx+1)), queueIndex: idx };
-      });
-    }
+    if (playQueue.length) return queueShelfItems();
     return [];
   }
 
@@ -13415,8 +13424,10 @@ function makeShelfManager() {
     if (absD > SHELF_VISIBLE_RADIUS + 0.5) { card.mesh.visible = false; return; }
     card.mesh.visible = true;
     card.mesh.renderOrder = 60 + Math.round((SHELF_VISIBLE_RADIUS + 1 - Math.min(absD, SHELF_VISIBLE_RADIUS + 1)) * 10);
-    var parX = pointerParallax.x || 0;
-    var parY = pointerParallax.y || 0;
+    var playbackShelfFrozen = modeIs === 'side' && playbackQueueSideActive;
+    var compactShelf = playbackShelfFrozen && document.body.classList.contains('playback-shelf-compact');
+    var parX = playbackShelfFrozen ? 0 : (pointerParallax.x || 0);
+    var parY = playbackShelfFrozen ? 0 : (pointerParallax.y || 0);
     var parWeight = Math.max(0, 1 - absD * 0.16);
     var pulse = card.fxPulse || 0;
     var layout = shelfLayoutProfile();
@@ -13456,6 +13467,10 @@ function makeShelfManager() {
       var px = layout.sideX + absD * layout.sideXStep - (detailOpenSide ? layout.sideDetailShift : 0) + entry * layout.sideEntryX;
       var py = (layout.sideY || 0) - delta * layout.sideYStep + (1 - reveal) * (delta < 0 ? -0.18 : 0.18);
       var pz = layout.sideZ - absD * layout.sideZStep - (1 - reveal) * 0.20;
+      if (compactShelf) {
+        px += 0.30;
+        pz -= 0.18;
+      }
       px += paneEase * paneSwitchDir * 0.60;
       py += paneEase * (delta < 0 ? -0.16 : 0.16);
       pz -= paneEase * 0.22;
@@ -13470,6 +13485,7 @@ function makeShelfManager() {
         pz += lift * (skullShelfPose ? 0.080 : 0.220);
       }
       var scale = (absD < 0.5 ? 1.12 : Math.max(0.55, 1.04 - absD * 0.14)) * (0.88 + reveal * 0.12) * (1 + pulse * 0.056 + breathPulse * 0.026 + lift * (skullShelfPose ? 0.045 : 0.075)) * layout.sideScale;
+      if (compactShelf) scale *= 0.86;
       if (wallpaperShelfPose) scale *= 1.22;
       else if (skullShelfPose) scale *= 1.04;
       card.mesh.position.set(px, py, pz);
@@ -13672,7 +13688,17 @@ void main(){ vec4 t = texture2D(uDotTex, gl_PointCoord); if (t.a < 0.02) discard
 
   function focusQueueCard(idx) {
     idx = Math.round(Number(idx));
-    if (!allItems.length || allItems[0].type !== 'queue' || idx < 0 || idx >= allItems.length) return false;
+    if (idx < 0 || idx >= playQueue.length) return false;
+    if (!allItems.length || allItems[0].type !== 'queue' || idx >= allItems.length) {
+      allItems = queueShelfItems();
+      lastSig = sig(allItems);
+      renderedStart = -1;
+      centerTarget = Math.min(allItems.length - 1, idx);
+      centerSmooth = centerTarget;
+      centerIdx = centerTarget;
+      syncRenderedWindow(true, false);
+    }
+    if (!allItems.length || allItems[0].type !== 'queue' || idx >= allItems.length) return false;
     var prevTarget = Math.round(centerTarget);
     centerTarget = idx;
     if (Math.abs(centerSmooth - centerTarget) > SHELF_VISIBLE_RADIUS + 1) centerSmooth = centerTarget;
@@ -13775,12 +13801,16 @@ void main(){ vec4 t = texture2D(uDotTex, gl_PointCoord); if (t.a < 0.02) discard
       // PSP 滚动平滑
       centerSmooth += (centerTarget - centerSmooth) * 0.16;
       if (Math.abs(centerSmooth - centerTarget) < 0.001) centerSmooth = centerTarget;
-      var px = pointerParallax.x, py = pointerParallax.y;
+      var playbackShelfFrozen = mode === 'side' && playbackQueueSideActive;
+      var px = playbackShelfFrozen ? 0 : pointerParallax.x, py = playbackShelfFrozen ? 0 : pointerParallax.y;
       var appRevealed = !document.body.classList.contains('splash-active');
       var cueVis = tickShelfHoverCue(dt);
       // v8: shelf 自动可见度 — 启动页期间不显示；侧栏只在右侧停留时淡入。
       var targetVis;
+      var homeShelfSuppressed = emptyHomeActive && !playbackQueueSideActive;
       if (!appRevealed) {
+        targetVis = 0;
+      } else if (homeShelfSuppressed) {
         targetVis = 0;
       } else if (mode === 'side') {
         var contentOpen = contentList && contentList.isOpen();
@@ -13995,9 +14025,99 @@ function flushDeferredQueuePanel(reason) {
   if (!queuePanelDirty) return;
   safeRenderQueuePanel(reason || 'flush-deferred-queue', { animate: false, scrollCurrent: miniQueueOpen, deferWhenHidden: false });
 }
+function setPlaybackQueueSideActive(active) {
+  playbackQueueSideActive = !!active && !!playQueue.length;
+  document.body.classList.toggle('playback-queue-side-active', playbackQueueSideActive);
+  if (!playbackQueueSideActive) document.body.classList.remove('playback-shelf-compact');
+  updatePlaybackQueueVisibilityButton();
+}
+function updatePlaybackQueueVisibilityButton() {
+  var btn = document.getElementById('queue-visibility-btn');
+  if (!btn) return;
+  var visible = playbackQueueSideActive && !playbackQueueSideUserHidden;
+  btn.classList.toggle('active', visible);
+  btn.title = visible ? '隐藏播放队列' : '显示播放队列';
+  btn.setAttribute('aria-label', btn.title);
+}
+function setPlaybackQueueSideUserHidden(hidden, reason) {
+  var nextHidden = !!hidden;
+  var changed = playbackQueueSideUserHidden !== nextHidden;
+  playbackQueueSideUserHidden = nextHidden;
+  document.body.classList.toggle('playback-queue-side-hidden', playbackQueueSideUserHidden);
+  if (playbackQueueSideUserHidden) {
+    document.body.classList.remove('playback-shelf-compact');
+    if (playbackQueueSideActive) setShelfPinnedOpen(false, true);
+  }
+  updatePlaybackQueueVisibilityButton();
+  if (!playbackQueueSideUserHidden && changed) {
+    showPlaybackQueueSide({ reason: reason || 'queue-visible' });
+  }
+}
+function togglePlaybackQueueSideVisibility() {
+  if (!playQueue.length) {
+    showToast('当前没有播放队列');
+    return;
+  }
+  var visible = playbackQueueSideActive && !playbackQueueSideUserHidden;
+  if (visible) {
+    setPlaybackQueueSideUserHidden(true, 'manual-toggle');
+    return;
+  }
+  setPlaybackQueueSideUserHidden(false, 'manual-toggle');
+  showPlaybackQueueSide({ reason: 'manual-toggle', userInitiatedQueue: true });
+}
+function updatePlaybackShelfCompactFromPointer(e) {
+  if (!playbackQueueSideActive || playbackQueueSideUserHidden) {
+    document.body.classList.remove('playback-shelf-compact');
+    return;
+  }
+  var x = e && e.clientX != null ? e.clientX : -1;
+  var leftZone = x >= 0 && x < window.innerWidth * 0.38;
+  var target = e && e.target;
+  var inLeftUi = !!(target && target.closest && target.closest('#playlist-panel,#search-area,#empty-home,#fx-panel'));
+  document.body.classList.toggle('playback-shelf-compact', leftZone || inLeftUi);
+}
+function showPlaybackQueueSide(opts) {
+  opts = opts || {};
+  if (currentIdx < 0 || !playQueue[currentIdx]) return false;
+  setPlaybackQueueSideActive(true);
+  if (playbackQueueSideUserHidden) return false;
+  var synced = false;
+  var panel = document.getElementById('playlist-panel');
+  var panelVisible = panel && (panel.classList.contains('show') || panel.classList.contains('peek') || panel.classList.contains('pinned'));
+  if (panelVisible) {
+    if (queueViewTab !== 'queue') safeSwitchPlaylistTab('queue', opts.reason || 'playback-queue-sync');
+    safeRenderQueuePanel(opts.reason || 'playback-queue-sync', { animate: false, scrollCurrent: true, deferWhenHidden: false });
+    synced = true;
+  } else if (miniQueueOpen) {
+    renderMiniQueuePanel({ scrollCurrent: true });
+    synced = true;
+  } else {
+    safeRenderQueuePanel(opts.reason || 'playback-queue-sync', { scrollCurrent: false });
+  }
+  if (shelfManager) {
+    if (shelfManager.hasOpenContent && shelfManager.hasOpenContent()) {
+      safeShelfCloseContent('playback-queue-sync');
+    }
+    var mode = shelfManager.getMode && shelfManager.getMode();
+    if (mode === 'off') {
+      setShelfMode('side');
+      mode = 'side';
+    }
+    if (mode === 'side') {
+      setShelfPinnedOpen(true, true);
+      var centerCard = shelfManager.getCardAt && shelfManager.getCardAt(0);
+      var needsQueueRebuild = !centerCard || !centerCard.item || centerCard.item.type !== 'queue';
+      if (needsQueueRebuild && shelfManager.rebuild) shelfManager.rebuild(true);
+      if (shelfManager.focusCurrentQueue) synced = shelfManager.focusCurrentQueue(currentIdx) || synced;
+    }
+  }
+  return synced;
+}
 function syncPlaybackRightSide(opts) {
   opts = opts || {};
   if (currentIdx < 0 || !playQueue[currentIdx]) return false;
+  if (opts.forceQueue) return showPlaybackQueueSide(opts);
   var synced = false;
   var panel = document.getElementById('playlist-panel');
   var panelVisible = panel && (panel.classList.contains('show') || panel.classList.contains('peek') || panel.classList.contains('pinned'));
@@ -14015,7 +14135,7 @@ function syncPlaybackRightSide(opts) {
     var contentList = shelfManager.getContentList && shelfManager.getContentList();
     if (contentList && contentList.isOpen && contentList.isOpen() && contentList.focusCurrentTrack) {
       synced = contentList.focusCurrentTrack(currentSong, currentIdx) || synced;
-    } else if (shelfManager.focusCurrentQueue) {
+    } else if (playbackQueueSideActive && !playbackQueueSideUserHidden && shelfManager.focusCurrentQueue) {
       synced = shelfManager.focusCurrentQueue(currentIdx) || synced;
     }
   }
@@ -14876,7 +14996,7 @@ function makeContentListManager() {
         console.warn('[ContentPlayRow]', e);
       });
       if (typeof syncPlaybackRightSide === 'function') {
-        setTimeout(function(){ syncPlaybackRightSide({ reason: 'content-play-row-keep-detail' }); }, 120);
+        setTimeout(function(){ syncPlaybackRightSide({ reason: 'content-play-row' }); }, 120);
       }
     }
   };
@@ -15462,6 +15582,24 @@ function songCoverSrc(song, size) {
   if (custom) return custom;
   return song && song.cover ? coverUrlWithSize(song.cover, size) : '';
 }
+function playlistCoverSet(pl) {
+  var set = [];
+  if (pl && Array.isArray(pl.coverSet)) set = pl.coverSet.slice();
+  if (pl && pl.cover) set.unshift(pl.cover);
+  var seen = {};
+  return set.map(function(url){ return String(url || '').trim(); }).filter(function(url){
+    if (!url || seen[url]) return false;
+    seen[url] = true;
+    return true;
+  }).slice(0, 4);
+}
+function playlistCoverSrc(pl, size) {
+  var cover = playlistCoverSet(pl)[0] || '';
+  if (!cover) return '';
+  return pl && (pl.provider === 'qq' || pl.provider === 'listen1')
+    ? cover
+    : coverUrlWithSize(cover, size || 88);
+}
 function cssImageUrl(url) {
   return String(url || '').replace(/\\/g, '\\\\').replace(/"/g, '%22');
 }
@@ -15929,6 +16067,14 @@ async function loadHomeDiscover(force) {
     }
   }
 }
+function weatherRadioProviderPreference() {
+  var providers = [];
+  if (qqLoginStatus && qqLoginStatus.loggedIn) providers.push('qq');
+  if (listen1Playlists && listen1Playlists.length) providers.push('listen1');
+  if (loginStatus && loginStatus.loggedIn) providers.push('netease');
+  providers.push('netease');
+  return providers.filter(function(provider, index){ return providers.indexOf(provider) === index; });
+}
 function homeWeatherRadioUrl(opts) {
   opts = opts || {};
   var params = [];
@@ -15940,6 +16086,7 @@ function homeWeatherRadioUrl(opts) {
     params.push('city=' + encodeURIComponent(opts.city || homeWeatherRadioState.city || HOME_WEATHER_DEFAULT_CITY));
   }
   params.push('timezone=' + encodeURIComponent(opts.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'auto'));
+  params.push('providers=' + encodeURIComponent(weatherRadioProviderPreference().join(',')));
   params.push('t=' + Date.now());
   return '/api/weather/radio?' + params.join('&');
 }
@@ -16041,7 +16188,7 @@ async function startWeatherRadio(opts) {
   safeShelfRebuild('weather-radio-start', true);
   forcePlaybackControlsInteractive();
   try {
-    await playQueueAt(0, { context: activeRadioContext });
+    await playQueueAt(0, { context: activeRadioContext, preserveHomeState: true, userInitiatedQueue: true });
   } catch (e) {
     console.warn('[WeatherRadioStartPlay]', e);
     showToast('天气电台已载入，播放启动失败');
@@ -16156,8 +16303,6 @@ function shouldShowEmptyHomeCore(ignoreSplash) {
   if (immersiveMode) return false;
   if (homeForcedOpen) return true;
   if (homeSuppressed) return false;
-  if (shelfPinnedOpen) return false;
-  if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return false;
   if (playQueue && playQueue.length) return false;
   if (currentIdx >= 0 && playQueue[currentIdx]) return false;
   if (playing) return false;
@@ -16171,8 +16316,6 @@ function shouldShowEmptyHomeAfterSplash() {
 }
 function shouldForceEmptyHomeAfterSplash() {
   if (immersiveMode) return false;
-  if (shelfPinnedOpen) return false;
-  if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return false;
   if (playQueue && playQueue.length) return false;
   if (currentIdx >= 0 && playQueue[currentIdx]) return false;
   if (playing) return false;
@@ -16181,8 +16324,6 @@ function shouldForceEmptyHomeAfterSplash() {
 function shouldUseIdleWallpaperPreview(ignoreSplash) {
   if (!ignoreSplash && document.body.classList.contains('splash-active')) return false;
   if (immersiveMode || playing || (audio && !audio.paused)) return false;
-  if (shelfPinnedOpen) return false;
-  if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return false;
   return true;
 }
 function setHomeControlsLocked(locked) {
@@ -16191,6 +16332,26 @@ function setHomeControlsLocked(locked) {
   if (bottom && locked && !hasActivePlaybackControls()) bottom.classList.add('soft-hidden');
   if (bottom && !locked) bottom.classList.remove('soft-hidden');
   if (locked) closeMiniQueue();
+}
+function clearShelfForHomeSurface(reason) {
+  playbackQueueSideActive = false;
+  playbackQueueSideUserHidden = false;
+  document.body.classList.remove('playback-queue-side-active', 'playback-queue-side-hidden', 'playback-shelf-compact');
+  updatePlaybackQueueVisibilityButton();
+  if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) {
+    safeShelfCloseContent(reason || 'home-surface');
+  }
+  if (typeof setShelfPinnedOpen === 'function') setShelfPinnedOpen(false, true);
+  updateShelfHoverCueFromPointer(null);
+  shelfHoverCue.target = 0;
+  shelfHoverCue.value = 0;
+  shelfHoverCue.zoneActive = false;
+  shelfHoverCue.enteredAt = 0;
+  shelfHoverCue.guide = false;
+  shelfVisibility = 0;
+  if (shelfManager && shelfManager.clearSelected) shelfManager.clearSelected();
+  if (typeof setShelfHoverTabVisible === 'function') setShelfHoverTabVisible(false);
+  if (typeof setFocusZone === 'function') setFocusZone(null, true);
 }
 function openHomePlayerConsole() {
   setHomeControlsLocked(false);
@@ -16273,6 +16434,7 @@ function updateEmptyHomeVisibility(opts) {
   if (show) activateHomeWallpaperPreview();
   else deactivateHomeWallpaperPreview(false);
   if (show) {
+    clearShelfForHomeSurface('empty-home');
     setPeek(document.getElementById('search-area'), true, 'search');
     renderHomeDiscover();
     scheduleHomeWeatherLoad(opts.forceLoad ? 1400 : 2400);
@@ -16353,7 +16515,7 @@ async function playHomeDaily() {
   safeRenderQueuePanel('home-daily');
   safeShelfRebuild('home-daily', true);
   forcePlaybackControlsInteractive();
-  playQueueAt(0).catch(function(e){ console.warn('[HomeDailyPlay]', e); });
+  playQueueAt(0, { preserveHomeState: true, userInitiatedQueue: true }).catch(function(e){ console.warn('[HomeDailyPlay]', e); });
 }
 async function playHomePrivateRadio() {
   homeForcedOpen = false;
@@ -16373,7 +16535,7 @@ async function playHomePrivateRadio() {
     safeRenderQueuePanel('home-private-radio');
     safeShelfRebuild('home-private-radio', true);
     forcePlaybackControlsInteractive();
-    playQueueAt(0).catch(function(e){ console.warn('[HomePrivatePlay]', e); });
+    playQueueAt(0, { preserveHomeState: true, userInitiatedQueue: true }).catch(function(e){ console.warn('[HomePrivatePlay]', e); });
     return;
   }
   var item = homeDiscoverState.playlists[0];
@@ -16398,7 +16560,7 @@ function playHomeSong(index) {
   safeRenderQueuePanel('home-song-card');
   safeShelfRebuild('home-song-card', true);
   forcePlaybackControlsInteractive();
-  playQueueAt(currentIdx).catch(function(e){ console.warn('[HomeSongPlay]', e); });
+  playQueueAt(currentIdx, { preserveHomeState: true, userInitiatedQueue: true }).catch(function(e){ console.warn('[HomeSongPlay]', e); });
 }
 function openHomePlaylist(index) {
   homeForcedOpen = false;
@@ -16447,16 +16609,10 @@ function openHomeLibrary() {
   refreshUserPlaylists(true);
 }
 function goHome() {
-  if (homeForcedOpen || emptyHomeActive) {
-    dismissHomePage({ toast: true });
-    showToast('已关闭 Home');
-    return;
-  }
   homeSuppressed = false;
   homeForcedOpen = true;
   setHomeControlsLocked(true);
-  if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) safeShelfCloseContent('open-empty-home');
-  if (typeof setShelfPinnedOpen === 'function') setShelfPinnedOpen(false, true);
+  clearShelfForHomeSurface('open-empty-home');
   togglePlaylistPanel(false);
   setPeek(document.getElementById('playlist-panel'), false, 'pl');
   setPeek(document.getElementById('fx-panel'), false, 'fx');
@@ -16579,7 +16735,7 @@ async function playHomeRecent(record) {
   safeRenderQueuePanel('home-recent-song');
   safeShelfRebuild('home-recent-song', true);
   forcePlaybackControlsInteractive();
-  await playQueueAt(0);
+  await playQueueAt(0, { preserveHomeState: true });
 }
 function openHomeInsight() {
   var summary = homeListenSummary();
@@ -16610,7 +16766,7 @@ async function playWeatherSong(index) {
   safeRenderQueuePanel('weather-radio-song');
   safeShelfRebuild('weather-radio-song', true);
   forcePlaybackControlsInteractive();
-  await playQueueAt(index, { context: activeRadioContext });
+  await playQueueAt(index, { context: activeRadioContext, preserveHomeState: true, userInitiatedQueue: true });
 }
 function handleHomeTileClick(index) {
   var row = document.getElementById('home-tile-row');
@@ -17569,6 +17725,46 @@ function importListen1BackupText(text) {
   safeShelfRebuild('listen1-import', true);
   showToast('已导入 Listen1 歌单 ' + parsed.playlists.length + ' 个，共 ' + (parsed.trackCount || 0) + ' 首');
   return true;
+}
+function triggerListen1AuthImport() {
+  var input = document.getElementById('listen1-auth-import-input');
+  if (!input) {
+    showToast('Listen1 登录态导入口未初始化');
+    return;
+  }
+  input.click();
+}
+function handleListen1AuthImportFile(file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(){
+    importListen1AuthText(String(reader.result || ''));
+  };
+  reader.onerror = function(){
+    showToast('Listen1 登录态文件读取失败');
+  };
+  reader.readAsText(file, 'utf-8');
+}
+async function importListen1AuthText(text) {
+  var payload = {};
+  try {
+    payload = JSON.parse(text);
+  } catch (e) {
+    payload = { cookie: String(text || '') };
+  }
+  try {
+    var data = await apiJson('/api/listen1/auth/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showToast(data.message || 'Listen1 登录态已导入');
+    refreshUserPlaylists(true);
+    return true;
+  } catch (e) {
+    showToast('Listen1 登录态导入失败: ' + (e && e.message ? e.message : e));
+    return false;
+  }
 }
 function clearListen1ImportedPlaylists() {
   listen1Playlists = [];
@@ -18663,16 +18859,61 @@ function isSameTitleArtist(source, candidate) {
 function alternatePlaybackProvider(song) {
   return songProviderKey(song) === 'qq' ? 'netease' : 'qq';
 }
+function listen1PlaybackProviders(song) {
+  var providers = [];
+  var own = song && String(song.listen1Source || '').toLowerCase();
+  ['kuwo', 'kugou', 'migu', 'netease', 'qq'].forEach(function(provider){
+    if (provider === own) providers.unshift(provider);
+    else providers.push(provider);
+  });
+  return providers.filter(function(provider, index){ return providers.indexOf(provider) === index; });
+}
+async function resolveListen1DirectPlayback(song, requestedQuality) {
+  song = song || {};
+  var provider = String(song.listen1Source || '').toLowerCase();
+  if (!provider || ['kuwo', 'kugou', 'migu'].indexOf(provider) < 0) return null;
+  return apiJson('/api/listen1/song/url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({}, song, {
+      provider: provider,
+      source: provider,
+      id: song.listen1RawId || song.id,
+      requestedQuality: requestedQuality || playbackQuality
+    }))
+  });
+}
+async function resolveListen1Playback(song, requestedQuality) {
+  try {
+    var direct = await resolveListen1DirectPlayback(song, requestedQuality);
+    if (direct && direct.url) return direct;
+  } catch (e) {
+    console.warn('[Listen1DirectPlayback]', e);
+  }
+  var data = await apiJson('/api/listen1/resolve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      song: song || {},
+      quality: requestedQuality || playbackQuality,
+      providers: listen1PlaybackProviders(song).join(',')
+    })
+  });
+  return data || {};
+}
 async function searchPlayablePlatformSong(song, providers) {
   providers = Array.isArray(providers) && providers.length ? providers : [alternatePlaybackProvider(song)];
   var artist = artistNameParts(song)[0] || '';
   var query = [song.name || song.title || '', song.artist || artist].filter(Boolean).join(' ').trim();
   if (!query) return null;
   for (var p = 0; p < providers.length; p++) {
-    var target = providers[p] === 'qq' ? 'qq' : 'netease';
+    var providerName = providers[p];
+    var target = providerName === 'qq' ? 'qq' : (providerName === 'netease' ? 'netease' : 'listen1');
     var url = target === 'qq'
       ? '/api/qq/search?keywords=' + encodeURIComponent(query) + '&limit=8'
-      : '/api/search?keywords=' + encodeURIComponent(query) + '&limit=12';
+      : (target === 'netease'
+        ? '/api/search?keywords=' + encodeURIComponent(query) + '&limit=12'
+        : '/api/listen1/search?provider=' + encodeURIComponent(providerName) + '&keywords=' + encodeURIComponent(query) + '&limit=8');
     try {
       var data = await apiJson(url);
       var list = data && (data.songs || data.result || []);
@@ -18680,7 +18921,7 @@ async function searchPlayablePlatformSong(song, providers) {
         if (isSameTitleArtist(song, list[i])) return cloneSong(list[i]);
       }
     } catch (e) {
-      console.warn('[PlayablePlatformSearch]', target, e);
+      console.warn('[PlayablePlatformSearch]', providerName, e);
     }
   }
   return null;
@@ -18832,6 +19073,19 @@ function scheduleAudioResumePosition(media, seconds, token) {
   applyResume();
 }
 
+function trialBannerTextForPlayback(song, data) {
+  data = data || {};
+  var provider = songProviderKey(song);
+  var providerName = provider === 'qq' ? 'QQ 音乐' : (provider === 'listen1' ? 'Listen1' : '网易云');
+  if (data.loggedIn && data.vipLevel === 'svip') return providerName + ' 需要单曲购买或更高权限';
+  if (data.loggedIn && data.vipLevel === 'vip') return providerName + ' 需要 SVIP 或购买，当前仅播放试听片段';
+  if (data.loggedIn) return providerName + ' 需要 VIP，当前仅播放试听片段';
+  if (provider === 'netease' && hasAnyPlatformLogin()) return '当前网易云来源仅试听，已尝试切换 QQ/Listen1 版本';
+  if (provider === 'qq' && hasAnyPlatformLogin()) return '当前 QQ 音乐来源仅试听，请检查会员或版权权限';
+  if (provider === 'listen1') return 'Listen1 当前来源仅试听，已尝试匹配可播放版本';
+  return '当前未登录，当前仅播放试听片段';
+}
+
 async function playQueueAt(idx, opts) {
   opts = opts || {};
   if (idx < 0 || idx >= playQueue.length) return;
@@ -18907,21 +19161,41 @@ async function playQueueAt(idx, opts) {
   try {
     markPlayPhase('source-url');
     var providerKey = songProviderKey(song);
-    if (providerKey === 'listen1') {
-      if (await tryAutoPlaybackFallback(song, { reason: 'listen1_match_required', restriction: { category: 'match_required' } }, idx, token, opts)) return;
+    var requestedQuality = normalizePlaybackQuality(opts.qualityOverride || playbackQuality);
+    var isListen1Playback = providerKey === 'listen1';
+    var data = null;
+    if (isListen1Playback) {
+      data = await resolveListen1Playback(song, requestedQuality);
+      if (token !== trackSwitchToken) return;
+      if (!data.url && await tryAutoPlaybackFallback(song, data || { reason: 'listen1_url_unavailable', restriction: { category: 'url_unavailable' } }, idx, token, opts)) return;
+      if (!data.url) {
       handlePlaybackUnavailable(song, { reason: 'match_required', message: 'Listen1 导入歌曲需要先匹配到当前已支持平台的可播放版本。' });
       return;
+      }
+      if (data.matchedSong) {
+        playQueue[idx] = hydrateCustomCover(Object.assign({}, song, data.matchedSong, {
+          provider: 'listen1',
+          source: 'listen1',
+          type: 'listen1',
+          autoFallbackFrom: songProviderKey(song)
+        }));
+        song = playQueue[idx];
+        safeRenderQueuePanel('listen1-resolve', { scrollCurrent: miniQueueOpen });
+        safeShelfRebuild('listen1-resolve');
+      }
+      showSourceFallbackNotice('Listen1 自动换源', (song.name || '当前歌曲') + ' 已切到 ' + (data.quality || data.platform || data.source || '可播放音源') + '。');
     }
     var isQQPlayback = providerKey === 'qq';
-    var requestedQuality = normalizePlaybackQuality(opts.qualityOverride || playbackQuality);
     if (!isQQPlayback && requestedQuality === 'jymaster' && !hasProviderSvip('netease', loginStatus)) requestedQuality = 'hires';
     if (isQQPlayback && qqPlaybackQualityCeiling && (requestedQuality === 'jymaster' || requestedQuality === 'hires' || requestedQuality === 'lossless')) {
       requestedQuality = qqPlaybackQualityCeiling;
     }
     var qualityParam = '&quality=' + encodeURIComponent(requestedQuality);
-    var data = isQQPlayback
-      ? await apiJson('/api/qq/song/url?mid=' + encodeURIComponent(song.mid || song.songmid || song.id || '') + '&mediaMid=' + encodeURIComponent(song.mediaMid || song.media_mid || '') + qualityParam)
-      : await apiJson('/api/song/url?id=' + song.id + qualityParam);
+    if (!isListen1Playback) {
+      data = isQQPlayback
+        ? await apiJson('/api/qq/song/url?mid=' + encodeURIComponent(song.mid || song.songmid || song.id || '') + '&mediaMid=' + encodeURIComponent(song.mediaMid || song.media_mid || '') + qualityParam)
+        : await apiJson('/api/song/url?id=' + song.id + qualityParam);
+    }
     if (token !== trackSwitchToken) return;
     if (!data.url) {
       if (isQQPlayback && await retryQQPlaybackWithCompatibleQuality(song, idx, token, opts, data, requestedQuality)) return;
@@ -18930,7 +19204,7 @@ async function playQueueAt(idx, opts) {
       return;
     }
     var resolvedQualityText = playbackResolvedQualityText(data);
-    if (!isQQPlayback && playbackQualityWasDowngraded(requestedQuality, data.level)) {
+    if (!isQQPlayback && !isListen1Playback && playbackQualityWasDowngraded(requestedQuality, data.level)) {
       showSourceFallbackNotice('网易云音质自动降级', '请求 ' + playbackQualityLabel(requestedQuality) + '，实际播放 ' + resolvedQualityText + '。');
     } else if (opts.qualitySwitch) {
       showSourceFallbackNotice('音质已切换', '实际播放: ' + resolvedQualityText + '。');
@@ -18941,11 +19215,13 @@ async function playQueueAt(idx, opts) {
       else if (data.loggedIn && data.vipLevel === 'vip') txt = '此歌曲需要 SVIP 或购买 · 当前仅播放试听片段';
       else if (data.loggedIn) txt = '此歌曲需 VIP · 当前仅播放试听片段';
       else txt = '当前未登录 · 仅播放试听片段';
+      txt = trialBannerTextForPlayback(song, data);
       document.getElementById('trial-text').textContent = txt;
       var trialLoginBtn = document.getElementById('trial-login-btn');
       if (trialLoginBtn) {
-        trialLoginBtn.style.display = data.loggedIn ? 'none' : '';
-        trialLoginBtn.onclick = function(){ openProviderLogin('netease'); };
+        var loginProviderForTrial = providerKey === 'qq' ? 'qq' : 'netease';
+        trialLoginBtn.style.display = data.loggedIn || hasAnyPlatformLogin() ? 'none' : '';
+        trialLoginBtn.onclick = function(){ openProviderLogin(loginProviderForTrial); };
       }
       document.getElementById('trial-banner').classList.add('show');
     }
@@ -19158,16 +19434,18 @@ function nextTrack() {
   if (!playQueue.length) return;
   playToggleBusy = false;
   forcePlaybackControlsInteractive();
+  var keepHome = !!emptyHomeActive;
   if (playMode === 'shuffle') currentIdx = Math.floor(Math.random() * playQueue.length);
   else currentIdx = (currentIdx + 1) % playQueue.length;
-  Promise.resolve(playQueueAt(currentIdx)).finally(forcePlaybackControlsInteractive);
+  Promise.resolve(playQueueAt(currentIdx, { preserveHomeState: keepHome })).finally(forcePlaybackControlsInteractive);
 }
 function prevTrack() {
   if (!playQueue.length) return;
   playToggleBusy = false;
   forcePlaybackControlsInteractive();
+  var keepHome = !!emptyHomeActive;
   currentIdx = (currentIdx - 1 + playQueue.length) % playQueue.length;
-  Promise.resolve(playQueueAt(currentIdx)).finally(forcePlaybackControlsInteractive);
+  Promise.resolve(playQueueAt(currentIdx, { preserveHomeState: keepHome })).finally(forcePlaybackControlsInteractive);
 }
 function shuffleQueue() {
   for (var i = playQueue.length - 1; i > 0; i--) {
@@ -19180,6 +19458,7 @@ function shuffleQueue() {
 }
 function clearQueue() {
   playQueue = []; currentIdx = -1;
+  setPlaybackQueueSideActive(false);
   safeRenderQueuePanel('clear-queue');
   safeShelfRebuild('clear-queue');
   updateCustomCoverButton();
@@ -19190,6 +19469,7 @@ function removeFromQueue(idx) {
   if (idx < 0 || idx >= playQueue.length) return;
   playQueue.splice(idx, 1);
   if (currentIdx >= playQueue.length) currentIdx = playQueue.length - 1;
+  if (!playQueue.length) setPlaybackQueueSideActive(false);
   safeRenderQueuePanel('remove-queue-item');
   safeShelfRebuild('remove-queue-item');
   updateCustomCoverButton();
@@ -19933,7 +20213,7 @@ function playlistPanelDetailHtml(pl, provider) {
   if (playlistPanelDetailState.key !== key) return '';
   var tracks = playlistPanelDetailState.tracks || [];
   var loading = playlistPanelDetailState.loading;
-  var cover = pl && pl.cover ? (provider === 'qq' || provider === 'listen1' ? pl.cover : (pl.cover + '?param=96y96')) : '';
+  var cover = playlistCoverSrc(pl, 96);
   var img = cover ? '<img class="pl-detail-cover" src="' + escHtml(cover) + '" alt="" decoding="async" onerror="this.style.opacity=0.2">' : '<div class="pl-detail-cover"></div>';
   var renderLimit = loading ? 0 : Math.max(PLAYLIST_DETAIL_INITIAL_RENDER, playlistPanelDetailState.renderLimit || PLAYLIST_DETAIL_INITIAL_RENDER);
   renderLimit = Math.min(tracks.length, renderLimit);
@@ -20036,6 +20316,10 @@ async function openPlaylistPanelDetail(provider, pid, title) {
         : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(pid)));
     if (playlistPanelDetailState.token !== token) return;
     playlistPanelDetailState.loading = false;
+    if (r && r.playlist) {
+      playlistPanelDetailState.playlist = Object.assign({}, playlistPanelDetailState.playlist || pl, r.playlist);
+      pl = playlistPanelDetailState.playlist;
+    }
     playlistPanelDetailState.tracks = (r && r.tracks || []).map(cloneSong);
     playlistPanelDetailState.renderLimit = Math.min(playlistPanelDetailState.tracks.length, PLAYLIST_DETAIL_INITIAL_RENDER);
     renderPlaylistPanelDetailState();
@@ -20066,7 +20350,7 @@ function playPlaylistPanelDetailTrack(index) {
   safeSwitchPlaylistTab('queue', 'playlist-panel-detail');
   safeShelfRebuild('playlist-panel-detail', true);
   forcePlaybackControlsInteractive();
-  playQueueAt(index).catch(function(e){ console.warn('[PlaylistPanelDetailPlay]', e); });
+  playQueueAt(index, { userInitiatedQueue: true }).catch(function(e){ console.warn('[PlaylistPanelDetailPlay]', e); });
 }
 function openPlaylistPanelDetailArtist(index) {
   var song = playlistPanelDetailState.tracks && playlistPanelDetailState.tracks[index];
@@ -20125,7 +20409,7 @@ function renderUserPlaylistsList(opts) {
   function playlistCardHtml(pl) {
     var provider = pl.provider === 'listen1' ? 'listen1' : (pl.provider === 'qq' ? 'qq' : 'netease');
     var providerLabel = provider === 'listen1' ? 'L1' : (provider === 'qq' ? 'QQ' : 'NE');
-    var thumb = pl.cover ? (provider === 'qq' || provider === 'listen1' ? pl.cover : (pl.cover + '?param=88y88')) : '';
+    var thumb = playlistCoverSrc(pl, 88);
     var imgTag = thumb ? '<img src="' + thumb + '" alt="" loading="lazy" decoding="async" onerror="this.style.opacity=0.2">' : '<div style="width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,.06);flex-shrink:0"></div>';
     var key = playlistPanelKey(provider, pl.id);
     var expanded = playlistPanelDetailState.key === key ? ' expanded' : '';
@@ -21811,9 +22095,8 @@ function ensureHomeWaveTrackBars() {
   el.innerHTML = new Array(count + 1).join('<span></span>');
 }
 function updateHomeAudioVisual(dt) {
-  if (!emptyHomeActive) return;
   var wave = document.getElementById('home-wave-track');
-  if (!wave) return;
+  if (!wave || !wave.offsetParent) return;
   var nowMs = performance.now();
   if (homeWaveTrackState.lastAt && nowMs - homeWaveTrackState.lastAt < 80) return;
   homeWaveTrackState.lastAt = nowMs;
@@ -25919,6 +26202,7 @@ window.addEventListener('mousemove', function(e){
   var fp = document.getElementById('fx-panel');
   var pp = document.getElementById('playlist-panel');
   var ex = e.clientX, ey = e.clientY, W = innerWidth, H = innerHeight;
+  updatePlaybackShelfCompactFromPointer(e);
   updateUserCapsuleAutoHideFromPointer(ex, ey);
   updateFxFabAutoHideFromPointer(ex, ey);
   updateFullscreenDiyPeekFromPointer(ex, ey);
@@ -27050,6 +27334,14 @@ if (listen1ImportInput) {
   listen1ImportInput.addEventListener('change', function(e){
     var file = e.target && e.target.files && e.target.files[0];
     handleListen1ImportFile(file);
+    e.target.value = '';
+  });
+}
+var listen1AuthImportInput = document.getElementById('listen1-auth-import-input');
+if (listen1AuthImportInput) {
+  listen1AuthImportInput.addEventListener('change', function(e){
+    var file = e.target && e.target.files && e.target.files[0];
+    handleListen1AuthImportFile(file);
     e.target.value = '';
   });
 }
