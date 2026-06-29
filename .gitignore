@@ -40,6 +40,7 @@ public/index.*.html
 
 # Screenshots and transient verification artifacts
 .playwright-cli/
+.codex-run/
 output/
 tmp/
 *.png.tmp
