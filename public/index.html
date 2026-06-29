@@ -271,15 +271,24 @@ body.home-wallpaper-preview #canvas-container{filter:none}
 .home-weather-mood{margin-top:7px;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.58);max-width:420px}
 .home-weather-stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .home-weather-stat{height:30px;padding:0 11px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.048);display:inline-flex;align-items:center;font-size:11px;font-weight:720;color:rgba(255,255,255,.64)}
-.home-weather-atmosphere{--weather-beat:0;--weather-bass:0;--weather-energy:0;position:relative;align-self:stretch;margin:20px 0 14px;min-height:122px;border-radius:16px;overflow:hidden;background:radial-gradient(circle at calc(16% + var(--weather-energy) * 18%) 36%,color-mix(in srgb,var(--home-accent) calc(18% + var(--weather-beat) * 22%),transparent),transparent 34%),linear-gradient(118deg,rgba(255,255,255,.070),rgba(255,255,255,.020) 54%,rgba(0,0,0,.20));border:1px solid rgba(255,255,255,calc(.080 + var(--weather-beat) * .10));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 16px calc(36px + var(--weather-energy) * 28px) rgba(0,0,0,.22)}
+.home-weather-atmosphere{--weather-beat:0;--weather-bass:0;--weather-energy:0;position:relative;align-self:stretch;margin:18px 0 10px;min-height:104px;border-radius:16px;overflow:hidden;background:radial-gradient(circle at calc(16% + var(--weather-energy) * 18%) 36%,color-mix(in srgb,var(--home-accent) calc(18% + var(--weather-beat) * 22%),transparent),transparent 34%),linear-gradient(118deg,rgba(255,255,255,.070),rgba(255,255,255,.020) 54%,rgba(0,0,0,.20));border:1px solid rgba(255,255,255,calc(.080 + var(--weather-beat) * .10));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 16px calc(36px + var(--weather-energy) * 28px) rgba(0,0,0,.22)}
 .home-weather-atmosphere::before{content:'';position:absolute;left:18px;right:18px;top:50%;height:calc(42px + var(--weather-bass) * 26px);transform:translateY(-50%) scaleY(calc(1 + var(--weather-beat) * .34));background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--home-accent) calc(34% + var(--weather-beat) * 20%),rgba(255,255,255,.54)) 0 calc(2px + var(--weather-energy) * 3px),transparent calc(2px + var(--weather-energy) * 3px) calc(16px + var(--weather-bass) * 10px));opacity:calc(.14 + var(--weather-energy) * .26);filter:blur(calc(.35px + var(--weather-bass) * .9px));animation:home-weather-wave 5.4s linear infinite}
 .home-weather-atmosphere::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,calc(.055 + var(--weather-beat) * .16)),transparent),linear-gradient(180deg,rgba(255,255,255,.050),transparent 46%,rgba(0,0,0,.30));transform:translateX(calc((var(--weather-energy) - .5) * 22px));pointer-events:none}
 @keyframes home-weather-wave{to{transform:translate(96px,-50%) scaleY(calc(1 + var(--weather-beat) * .44))}}
-.home-weather-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.home-weather-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 10px;position:relative;z-index:3}
+.home-weather-actions .home-chip{width:100%;height:34px;padding:0 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-now-playing{display:none;position:relative;z-index:3;align-items:center;gap:10px;margin:0 0 6px;padding:11px 13px;border-radius:15px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(120deg,rgba(255,255,255,.085),rgba(255,255,255,.030));box-shadow:inset 0 1px 0 rgba(255,255,255,.070),0 12px 30px rgba(0,0,0,.18);min-width:0}
+.home-now-playing.show{display:flex}
+.home-now-cover{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.035));background-size:cover;background-position:center;box-shadow:0 10px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.16);flex:0 0 auto}
+.home-now-meta{min-width:0;flex:1}
+.home-now-kicker{font-size:9px;font-weight:820;letter-spacing:.20em;text-transform:uppercase;color:rgba(255,255,255,.54);line-height:1}
+.home-now-title{margin-top:5px;font-size:13px;font-weight:780;line-height:1.16;color:rgba(255,255,255,.95);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-now-artist{margin-top:3px;font-size:11px;color:rgba(255,255,255,.50);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-now-state{flex:0 0 auto;font-size:11px;font-weight:760;color:rgba(255,255,255,.78);padding-left:8px}
 .home-quick-row{grid-column:1;position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .home-chip{height:32px;padding:0 13px;border-radius:999px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.060);color:rgba(255,255,255,.76);font-family:inherit;font-size:11.5px;font-weight:680;cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
 .home-chip:hover{background:color-mix(in srgb,var(--home-accent) 10%,transparent);border-color:color-mix(in srgb,var(--home-accent) 38%,rgba(255,255,255,.10));color:#fff;box-shadow:0 10px 26px color-mix(in srgb,var(--home-accent) 8%,transparent);transform:translateY(-1px)}
-.home-console-chip{height:36px;border-color:color-mix(in srgb,var(--home-accent) 34%,rgba(255,255,255,.12));background:color-mix(in srgb,var(--home-accent) 12%,rgba(255,255,255,.055));color:#fff}
+.home-console-chip{border-color:color-mix(in srgb,var(--home-accent) 34%,rgba(255,255,255,.12));background:color-mix(in srgb,var(--home-accent) 12%,rgba(255,255,255,.055));color:#fff}
 .home-visual{grid-column:2;grid-row:2 / span 2;position:relative;align-self:center;justify-self:end;width:100%;max-width:300px;height:74px;margin-top:0;pointer-events:none;filter:drop-shadow(0 18px 34px rgba(0,0,0,.28))}
 .home-visual.generated .home-sleeve,.home-visual.generated .home-disc{display:none}
 .home-radio-img{display:none}
@@ -356,11 +365,11 @@ body.empty-home-active .home-visual{animation:home-visual-drift 8.8s ease-in-out
 @media (max-width:840px){.empty-home-shell{grid-template-columns:minmax(250px,.86fr) minmax(360px,1.14fr)}.home-hero-inner{grid-template-columns:minmax(0,1fr)}.home-visual{display:none}.home-mosaic{height:124px;min-height:108px}.home-card{min-height:108px}.home-card-title{font-size:15px;max-width:68%}.home-card-sub{font-size:10.3px;max-width:62%}.home-card-art{width:66px;height:66px;border-radius:15px}.home-card::after{right:72px;width:24px;height:44px}.home-tile-title{font-size:11.5px}}
 @media (max-width:760px){#empty-home{top:150px;bottom:56px;width:calc(100vw - 40px)}.empty-home-shell{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;overflow:auto;padding-bottom:4px}.home-hero{grid-row:auto;min-height:344px}.home-mosaic{height:172px;min-height:150px}.home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-tile-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
 body.empty-home-active.controls-visible #empty-home{bottom:128px}
-body.playback-queue-side-active.empty-home-active .empty-home-shell{grid-template-columns:minmax(430px,.58fr) minmax(520px,.42fr)}
-body.playback-queue-side-active.empty-home-active .home-grid,
-body.playback-queue-side-active.empty-home-active .home-rail{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(24px) scale(.98);transition:opacity .24s ease,transform .28s cubic-bezier(.16,1,.3,1),visibility 0s linear .24s}
-body.playback-queue-side-active.empty-home-active .home-hero{max-width:650px}
-body.playback-queue-side-active.empty-home-active #empty-home{z-index:3}
+body.empty-home-active.home-right-hidden .empty-home-shell{grid-template-columns:minmax(420px,680px) minmax(0,0fr)}
+body.empty-home-active.home-right-hidden .home-grid,
+body.empty-home-active.home-right-hidden .home-rail{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(28px) scale(.98);transition:opacity .24s ease,transform .28s cubic-bezier(.16,1,.3,1),visibility 0s linear .24s}
+body.empty-home-active.home-right-hidden .home-hero{max-width:min(720px,100%)}
+body.empty-home-active.home-right-hidden #empty-home{z-index:4}
 @media (max-height:760px){body.empty-home-active.controls-visible #empty-home{bottom:112px}}
 @media (max-width:620px){#empty-home{top:146px;bottom:44px;width:calc(100vw - 24px)}.home-hero{padding:20px;border-radius:22px}.home-hero-inner{display:flex;flex-direction:column}.home-visual{display:none}.home-mosaic{display:none}.home-grid{grid-template-columns:1fr}.home-tile-row{grid-template-columns:repeat(2,minmax(0,1fr))}.home-tile-cover{height:auto;aspect-ratio:1}.home-tile-sub{display:block}.home-card-art{width:88px;height:88px}.home-card-title,.home-card-sub{max-width:68%}}
 .home-visual.generated{height:74px!important;max-width:300px!important;align-self:center!important}
@@ -399,6 +408,10 @@ body.user-capsule-auto-hide #top-right::before{content:'';position:absolute;righ
 #home-btn{width:44px;min-width:44px;border-color:rgba(0,245,212,.18);background:rgba(255,255,255,.04);color:rgba(232,236,239,.78)}
 #home-btn:hover{border-color:rgba(0,245,212,.44);background:rgba(0,245,212,.075);color:#fff;box-shadow:0 14px 38px rgba(0,245,212,.08)}
 body.empty-home-active #home-btn{border-color:rgba(255,83,103,.36);background:rgba(255,83,103,.11);color:#fff}
+#queue-visibility-btn{display:none;border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.045);color:rgba(232,236,239,.74)}
+body.empty-home-active #queue-visibility-btn{display:flex}
+#queue-visibility-btn:hover{border-color:rgba(244,210,138,.46);background:rgba(244,210,138,.10);color:#fff}
+#queue-visibility-btn.active{border-color:rgba(244,210,138,.50);background:rgba(244,210,138,.12);color:#fff0bf}
 body.desktop-shell #empty-home{top:132px;bottom:46px;width:calc(100vw - 44px)}
 body.desktop-shell .empty-home-shell{min-height:0}
 body.desktop-shell .home-hero{min-height:390px}
@@ -825,6 +838,14 @@ body.login-guide-active #login-guide-canvas{opacity:1}
 .modal{position:relative;background:linear-gradient(180deg,rgba(24,23,26,0.96),rgba(12,11,12,0.92));border:1px solid rgba(244,210,138,0.16);border-radius:18px;padding:32px;max-width:380px;width:90vw;text-align:center;box-shadow:0 26px 90px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.035),inset 0 1px 0 rgba(255,255,255,.07);will-change:opacity,transform,filter}
 .modal h2{font-size:18px;font-weight:500;letter-spacing:.5px;margin-bottom:18px;color:rgba(255,255,255,0.95)}
 .modal .desc{font-size:12.5px;color:rgba(255,255,255,0.5);margin-bottom:20px;line-height:1.6}
+.modal-sub{font-size:12.5px;color:rgba(255,255,255,.52);line-height:1.55;margin:-6px 0 18px}
+.modal-input{width:100%;height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.065);color:#fff;font:inherit;font-size:13px;padding:0 13px;outline:none;box-sizing:border-box}
+.modal-input:focus{border-color:rgba(244,210,138,.46);box-shadow:0 0 0 3px rgba(244,210,138,.10)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.modal-actions button{height:34px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);color:rgba(255,255,255,.78);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.modal-actions button.primary{border-color:rgba(244,210,138,.44);background:rgba(244,210,138,.13);color:#fff0bf}
+.modal-close{position:absolute;right:13px;top:12px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);color:rgba(255,255,255,.58);font-size:18px;line-height:1;cursor:pointer}
+.modal-close:hover{background:rgba(255,255,255,.10);color:#fff}
 .dual-login-modal,.dual-user-modal{width:min(470px,92vw);max-width:min(470px,92vw)}
 .login-intro{margin:-6px 0 16px;padding:14px 15px;border-radius:14px;border:1px solid rgba(255,255,255,.075);background:linear-gradient(135deg,rgba(255,83,103,.09),rgba(244,210,138,.055),rgba(255,255,255,.025));text-align:left}
 .login-intro-kicker{font-size:10px;font-weight:780;letter-spacing:.18em;color:rgba(244,210,138,.72);text-transform:uppercase;margin-bottom:6px}
@@ -2000,6 +2021,15 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
           <button class="home-chip" type="button" data-home-radio-start>开启天气电台</button>
           <button class="home-chip home-console-chip" type="button" onclick="openHomePlayerConsole()">展开播放器控制台</button>
         </div>
+        <div class="home-now-playing" id="home-now-playing" aria-live="polite">
+          <div class="home-now-cover" id="home-now-cover"></div>
+          <div class="home-now-meta">
+            <div class="home-now-kicker">NOW PLAYING</div>
+            <div class="home-now-title" id="home-now-title">未在播放</div>
+            <div class="home-now-artist" id="home-now-artist">选择一首歌开始</div>
+          </div>
+          <div class="home-now-state" id="home-now-state">待机</div>
+        </div>
       </div>
     </div>
 
@@ -2040,9 +2070,8 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
   </div>
 </section>
 
-<!-- 顶部右侧 (只保留用户) -->
 <div id="top-right">
-  <button id="queue-visibility-btn" class="icon-btn" onclick="togglePlaybackQueueSideVisibility()" title="显示/隐藏播放队列" aria-label="显示/隐藏播放队列">
+  <button id="queue-visibility-btn" class="icon-btn" onclick="toggleHomeRightVisibility()" title="显示/隐藏 Home 右侧内容" aria-label="显示/隐藏 Home 右侧内容">
     <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
   </button>
   <button id="user-capsule-hide-btn" class="user-capsule-hide-btn" type="button" onclick="toggleUserCapsuleAutoHide(event)" title="自动隐藏账号胶囊">‹</button>
@@ -2788,6 +2817,7 @@ var PLAYLIST_PANEL_PIN_STORE_KEY = 'mineradio-playlist-panel-pinned-v1';
 var USER_CAPSULE_AUTO_HIDE_STORE_KEY = 'mineradio-user-capsule-auto-hide-v1';
 var FX_FAB_AUTO_HIDE_STORE_KEY = 'mineradio-fx-fab-auto-hide-v1';
 var CONTROLS_AUTO_HIDE_STORE_KEY = 'mineradio-controls-auto-hide-v1';
+var HOME_RIGHT_HIDDEN_STORE_KEY = 'mineradio-home-right-hidden-v1';
 var FREE_CAMERA_STORE_KEY = 'mineradio-free-camera-v1';
 var HOTKEY_SETTINGS_STORE_KEY = 'mineradio-hotkey-settings-v1';
 var VISUAL_GUIDE_SEEN_STORE_KEY = 'mineradio-visual-guide-seen-v2';
@@ -2827,6 +2857,7 @@ var visualGuideState = { bottomWasVisible: false, searchWasPeek: false, manual: 
 var emptyHomeActive = false;
 var homeForcedOpen = false;
 var homeSuppressed = false;
+var homeRightHidden = readBooleanPreference(HOME_RIGHT_HIDDEN_STORE_KEY, false);
 var homeDiscoverState = { loading: false, loaded: false, loggedIn: false, mode: 'starter', songs: [], playlists: [], podcasts: [], error: '', updatedAt: 0 };
 var homeDiscoverToken = 0;
 var homeVisualPresetActive = false;
@@ -2834,16 +2865,34 @@ var homeVisualPrevPreset = 0;
 var HOME_LISTEN_STATS_KEY = 'mineradio-listen-stats-v1';
 var HOME_WEATHER_CITY_KEY = 'mineradio-weather-city';
 var HOME_WEATHER_DEFAULT_CITY = '东莞市松山湖';
+function isTransientWeatherCity(city) {
+  city = String(city || '').trim();
+  return !city || city === '上海' || city === '当前位置' || city === '定位中' || city === 'GPS 定位' || city === '经纬度定位';
+}
 function readHomeWeatherCity() {
   var saved = '';
   try { saved = String(localStorage.getItem(HOME_WEATHER_CITY_KEY) || '').trim(); } catch (e) {}
-  if (!saved || saved === '上海' || saved === '当前位置' || saved === '定位中') {
+  if (isTransientWeatherCity(saved)) {
     try { localStorage.setItem(HOME_WEATHER_CITY_KEY, HOME_WEATHER_DEFAULT_CITY); } catch (e) {}
     return HOME_WEATHER_DEFAULT_CITY;
   }
   return saved;
 }
-var homeWeatherRadioState = { loading: false, loaded: false, city: readHomeWeatherCity(), weather: null, radio: null, error: '', updatedAt: 0, timezone: '', lastLocatedAt: 0, localClockLabel: '' };
+function saveHomeWeatherCity(city, opts) {
+  city = String(city || '').trim();
+  opts = opts || {};
+  if (isTransientWeatherCity(city) || opts.coordinateBased) return false;
+  try { localStorage.setItem(HOME_WEATHER_CITY_KEY, city); } catch (e) {}
+  return true;
+}
+function homeWeatherManualCityValue() {
+  var saved = '';
+  try { saved = String(localStorage.getItem(HOME_WEATHER_CITY_KEY) || '').trim(); } catch (e) {}
+  if (!isTransientWeatherCity(saved)) return saved;
+  if (homeWeatherRadioState && !isTransientWeatherCity(homeWeatherRadioState.city)) return homeWeatherRadioState.city;
+  return HOME_WEATHER_DEFAULT_CITY;
+}
+var homeWeatherRadioState = { loading: false, loaded: false, city: readHomeWeatherCity(), weather: null, radio: null, error: '', updatedAt: 0, timezone: '', lastLocatedAt: 0, localClockLabel: '', locationSource: '', locationAccuracy: null, locationError: '' };
 var homeWeatherToken = 0;
 var homeWeatherLoadTimer = null;
 var homeWeatherLoadPromise = null;
@@ -12991,7 +13040,7 @@ function tickShelfHoverCue(dt) {
   if (shelfHoverCue.value < 0.006 && !target) shelfHoverCue.value = 0;
   return shelfHoverCue.value;
 }
-function setShelfPinnedOpen(open, immediate) {
+function setShelfPinnedOpen(open, immediate, skipHomeRefresh) {
   var nextOpen = !!open;
   if (nextOpen && typeof suppressBottomControlsForShelf === 'function') suppressBottomControlsForShelf(980);
   if (nextOpen && !shelfPinnedOpen) {
@@ -13006,7 +13055,7 @@ function setShelfPinnedOpen(open, immediate) {
   var hint = document.getElementById('hint');
   if (hint) hint.classList.toggle('shelf-hidden', shelfPinnedOpen || !!(shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()));
   if (nextOpen && typeof setPeek === 'function') setPeek(document.getElementById('search-area'), false, 'search');
-  if (typeof updateEmptyHomeVisibility === 'function') updateEmptyHomeVisibility({ forceLoad: false });
+  if (!skipHomeRefresh && typeof updateEmptyHomeVisibility === 'function') updateEmptyHomeVisibility({ forceLoad: false });
   if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) return;
   if (typeof setFocusZone === 'function') setFocusZone(shelfPinnedOpen ? 'shelf-side' : null, immediate);
 }
@@ -13106,7 +13155,7 @@ function makeShelfManager() {
   }
 
   function currentItems() {
-    if (playbackQueueSideActive && !playbackQueueSideUserHidden && playQueue.length) return queueShelfItems();
+    if (playbackQueueSideActive && !emptyHomeActive && playQueue.length) return queueShelfItems();
     if (hasShelfLibrarySource() && (userPlaylists.length || myPodcastCollections.length)) {
       var source = activePlaylists();
       var items = source.map(function(pl){
@@ -13123,7 +13172,6 @@ function makeShelfManager() {
       }
       if (items.length) return items;
     }
-    if (playQueue.length) return queueShelfItems();
     return [];
   }
 
@@ -13424,8 +13472,8 @@ function makeShelfManager() {
     if (absD > SHELF_VISIBLE_RADIUS + 0.5) { card.mesh.visible = false; return; }
     card.mesh.visible = true;
     card.mesh.renderOrder = 60 + Math.round((SHELF_VISIBLE_RADIUS + 1 - Math.min(absD, SHELF_VISIBLE_RADIUS + 1)) * 10);
-    var playbackShelfFrozen = modeIs === 'side' && playbackQueueSideActive;
-    var compactShelf = playbackShelfFrozen && document.body.classList.contains('playback-shelf-compact');
+    var playbackShelfFrozen = false;
+    var compactShelf = false;
     var parX = playbackShelfFrozen ? 0 : (pointerParallax.x || 0);
     var parY = playbackShelfFrozen ? 0 : (pointerParallax.y || 0);
     var parWeight = Math.max(0, 1 - absD * 0.16);
@@ -13801,13 +13849,13 @@ void main(){ vec4 t = texture2D(uDotTex, gl_PointCoord); if (t.a < 0.02) discard
       // PSP 滚动平滑
       centerSmooth += (centerTarget - centerSmooth) * 0.16;
       if (Math.abs(centerSmooth - centerTarget) < 0.001) centerSmooth = centerTarget;
-      var playbackShelfFrozen = mode === 'side' && playbackQueueSideActive;
+      var playbackShelfFrozen = false;
       var px = playbackShelfFrozen ? 0 : pointerParallax.x, py = playbackShelfFrozen ? 0 : pointerParallax.y;
       var appRevealed = !document.body.classList.contains('splash-active');
       var cueVis = tickShelfHoverCue(dt);
       // v8: shelf 自动可见度 — 启动页期间不显示；侧栏只在右侧停留时淡入。
       var targetVis;
-      var homeShelfSuppressed = emptyHomeActive && !playbackQueueSideActive;
+      var homeShelfSuppressed = emptyHomeActive;
       if (!appRevealed) {
         targetVis = 0;
       } else if (homeShelfSuppressed) {
@@ -14026,62 +14074,33 @@ function flushDeferredQueuePanel(reason) {
   safeRenderQueuePanel(reason || 'flush-deferred-queue', { animate: false, scrollCurrent: miniQueueOpen, deferWhenHidden: false });
 }
 function setPlaybackQueueSideActive(active) {
-  playbackQueueSideActive = !!active && !!playQueue.length;
+  playbackQueueSideActive = !!active && !!playQueue.length && currentIdx >= 0;
   document.body.classList.toggle('playback-queue-side-active', playbackQueueSideActive);
-  if (!playbackQueueSideActive) document.body.classList.remove('playback-shelf-compact');
   updatePlaybackQueueVisibilityButton();
 }
 function updatePlaybackQueueVisibilityButton() {
   var btn = document.getElementById('queue-visibility-btn');
   if (!btn) return;
-  var visible = playbackQueueSideActive && !playbackQueueSideUserHidden;
-  btn.classList.toggle('active', visible);
-  btn.title = visible ? '隐藏播放队列' : '显示播放队列';
+  var available = !!emptyHomeActive;
+  btn.classList.toggle('active', !!homeRightHidden);
+  btn.style.display = available ? '' : '';
+  btn.title = '显示/隐藏 Home 右侧内容';
   btn.setAttribute('aria-label', btn.title);
 }
 function setPlaybackQueueSideUserHidden(hidden, reason) {
-  var nextHidden = !!hidden;
-  var changed = playbackQueueSideUserHidden !== nextHidden;
-  playbackQueueSideUserHidden = nextHidden;
-  document.body.classList.toggle('playback-queue-side-hidden', playbackQueueSideUserHidden);
-  if (playbackQueueSideUserHidden) {
-    document.body.classList.remove('playback-shelf-compact');
-    if (playbackQueueSideActive) setShelfPinnedOpen(false, true);
-  }
-  updatePlaybackQueueVisibilityButton();
-  if (!playbackQueueSideUserHidden && changed) {
-    showPlaybackQueueSide({ reason: reason || 'queue-visible' });
-  }
+  playbackQueueSideUserHidden = !!hidden;
+  setHomeRightHidden(hidden, reason || 'legacy-home-right-visibility');
 }
 function togglePlaybackQueueSideVisibility() {
-  if (!playQueue.length) {
-    showToast('当前没有播放队列');
-    return;
-  }
-  var visible = playbackQueueSideActive && !playbackQueueSideUserHidden;
-  if (visible) {
-    setPlaybackQueueSideUserHidden(true, 'manual-toggle');
-    return;
-  }
-  setPlaybackQueueSideUserHidden(false, 'manual-toggle');
-  showPlaybackQueueSide({ reason: 'manual-toggle', userInitiatedQueue: true });
+  toggleHomeRightVisibility();
 }
 function updatePlaybackShelfCompactFromPointer(e) {
-  if (!playbackQueueSideActive || playbackQueueSideUserHidden) {
-    document.body.classList.remove('playback-shelf-compact');
-    return;
-  }
-  var x = e && e.clientX != null ? e.clientX : -1;
-  var leftZone = x >= 0 && x < window.innerWidth * 0.38;
-  var target = e && e.target;
-  var inLeftUi = !!(target && target.closest && target.closest('#playlist-panel,#search-area,#empty-home,#fx-panel'));
-  document.body.classList.toggle('playback-shelf-compact', leftZone || inLeftUi);
+  return false;
 }
 function showPlaybackQueueSide(opts) {
   opts = opts || {};
   if (currentIdx < 0 || !playQueue[currentIdx]) return false;
   setPlaybackQueueSideActive(true);
-  if (playbackQueueSideUserHidden) return false;
   var synced = false;
   var panel = document.getElementById('playlist-panel');
   var panelVisible = panel && (panel.classList.contains('show') || panel.classList.contains('peek') || panel.classList.contains('pinned'));
@@ -14095,22 +14114,9 @@ function showPlaybackQueueSide(opts) {
   } else {
     safeRenderQueuePanel(opts.reason || 'playback-queue-sync', { scrollCurrent: false });
   }
-  if (shelfManager) {
-    if (shelfManager.hasOpenContent && shelfManager.hasOpenContent()) {
-      safeShelfCloseContent('playback-queue-sync');
-    }
-    var mode = shelfManager.getMode && shelfManager.getMode();
-    if (mode === 'off') {
-      setShelfMode('side');
-      mode = 'side';
-    }
-    if (mode === 'side') {
-      setShelfPinnedOpen(true, true);
-      var centerCard = shelfManager.getCardAt && shelfManager.getCardAt(0);
-      var needsQueueRebuild = !centerCard || !centerCard.item || centerCard.item.type !== 'queue';
-      if (needsQueueRebuild && shelfManager.rebuild) shelfManager.rebuild(true);
-      if (shelfManager.focusCurrentQueue) synced = shelfManager.focusCurrentQueue(currentIdx) || synced;
-    }
+  if (!emptyHomeActive && shelfManager && shelfManager.focusCurrentQueue && shelfManager.focusCurrentQueue(currentIdx)) {
+    setShelfPinnedOpen(true, true);
+    synced = true;
   }
   return synced;
 }
@@ -14129,15 +14135,6 @@ function syncPlaybackRightSide(opts) {
   } else if (miniQueueOpen) {
     renderMiniQueuePanel({ scrollCurrent: true });
     synced = true;
-  }
-  if (shelfManager) {
-    var currentSong = playQueue[currentIdx];
-    var contentList = shelfManager.getContentList && shelfManager.getContentList();
-    if (contentList && contentList.isOpen && contentList.isOpen() && contentList.focusCurrentTrack) {
-      synced = contentList.focusCurrentTrack(currentSong, currentIdx) || synced;
-    } else if (playbackQueueSideActive && !playbackQueueSideUserHidden && shelfManager.focusCurrentQueue) {
-      synced = shelfManager.focusCurrentQueue(currentIdx) || synced;
-    }
   }
   return synced;
 }
@@ -15611,6 +15608,42 @@ function setHomeArt(id, url, size) {
   el.classList.toggle('has-cover', !!src);
   el.classList.toggle('home-skeleton', !src && homeDiscoverState.loading);
 }
+function currentPlaybackProgressRatio() {
+  if (!audio || !isFinite(audio.duration) || audio.duration <= 0) return 0;
+  return clampRange((Number(audio.currentTime) || 0) / audio.duration, 0, 1);
+}
+function setHomeRightToggleAvailable() {
+  updatePlaybackQueueVisibilityButton();
+}
+function setHomeRightHidden(hidden, reason) {
+  homeRightHidden = !!hidden;
+  document.body.classList.toggle('home-right-hidden', !!homeRightHidden);
+  saveBooleanPreference(HOME_RIGHT_HIDDEN_STORE_KEY, homeRightHidden);
+  updatePlaybackQueueVisibilityButton();
+}
+function toggleHomeRightVisibility() {
+  if (!emptyHomeActive) {
+    showToast('请先回到 Home');
+    return;
+  }
+  setHomeRightHidden(!homeRightHidden, 'manual-toggle');
+}
+function renderHomeNowPlaying() {
+  var wrap = document.getElementById('home-now-playing');
+  if (!wrap) return;
+  var song = currentIdx >= 0 && playQueue[currentIdx] ? playQueue[currentIdx] : null;
+  wrap.classList.toggle('show', !!song);
+  if (!song) return;
+  var cover = songCoverSrc(song, 96);
+  var coverEl = document.getElementById('home-now-cover');
+  var titleEl = document.getElementById('home-now-title');
+  var artistEl = document.getElementById('home-now-artist');
+  var stateEl = document.getElementById('home-now-state');
+  if (coverEl) coverEl.style.backgroundImage = cover ? 'url("' + cssImageUrl(cover) + '")' : '';
+  if (titleEl) titleEl.textContent = song.name || song.title || '未知歌曲';
+  if (artistEl) artistEl.textContent = song.artist || songSourceLabel(song) || '未知歌手';
+  if (stateEl) stateEl.textContent = playing || (audio && !audio.paused) ? '播放中' : '已暂停';
+}
 function compactHomeCount(n) {
   n = Number(n) || 0;
   if (n >= 100000000) return (n / 100000000).toFixed(1).replace(/\.0$/, '') + '亿';
@@ -15887,6 +15920,28 @@ function weatherUpdatedLabel(ts) {
   if (diff < 60 * 60 * 1000) return Math.max(1, Math.round(diff / 60000)) + ' 分钟前更新';
   return Math.max(1, Math.round(diff / 3600000)) + ' 小时前更新';
 }
+function homeWeatherLocationSourceLabel() {
+  var source = homeWeatherRadioState.locationSource || '';
+  if (source === 'gps-system') return '系统 GPS';
+  if (source === 'gps-browser') return '浏览器 GPS';
+  if (source === 'ip') return '网络定位';
+  if (source === 'manual') return '手动城市';
+  if (source === 'default') return '默认城市';
+  return '';
+}
+function locationCoordinateLabel(lat, lon, accuracy) {
+  var latitude = Number(lat);
+  var longitude = Number(lon);
+  if (!isFinite(latitude) || !isFinite(longitude)) return '';
+  var text = latitude.toFixed(4) + ', ' + longitude.toFixed(4);
+  if (isFinite(Number(accuracy))) text += ' · ±' + Math.round(Number(accuracy)) + 'm';
+  return text;
+}
+function locationDisplayName(location) {
+  location = location || {};
+  // Prefer resolved place names for GPS; coordinates stay in the smaller stats row.
+  return location.displayName || location.name || homeWeatherRadioState.city || HOME_WEATHER_DEFAULT_CITY;
+}
 function updateHomeWeatherClock() {
   var timeEl = document.getElementById('home-local-time');
   var dateEl = document.getElementById('home-local-date');
@@ -15906,7 +15961,8 @@ function renderHomeWeatherHero() {
   updateHomeWeatherClock();
   var weather = homeWeatherRadioState.weather;
   var location = weather && weather.location || {};
-  var city = location.name || homeWeatherRadioState.city || HOME_WEATHER_DEFAULT_CITY;
+  var city = locationDisplayName(location);
+  var coordinateLabel = locationCoordinateLabel(location.latitude, location.longitude, homeWeatherRadioState.locationAccuracy);
   var label = weather && weather.label || (homeWeatherRadioState.error ? '天气暂不可用' : '正在整理天气');
   var temp = weather && isFinite(Number(weather.temperature)) ? Math.round(Number(weather.temperature)) + '°' : '--°';
   var feels = weather && isFinite(Number(weather.apparentTemperature)) ? Math.round(Number(weather.apparentTemperature)) + '°' : '--°';
@@ -15923,17 +15979,20 @@ function renderHomeWeatherHero() {
   if (locEl) locEl.textContent = city;
   if (updatedEl) {
     var updatedAt = weather && weather.updatedAt || homeWeatherRadioState.updatedAt || homeWeatherRadioState.lastLocatedAt;
-    updatedEl.textContent = homeWeatherRadioState.loading ? '正在同步天气' : weatherUpdatedLabel(updatedAt);
+    var sourceLabel = homeWeatherLocationSourceLabel();
+    updatedEl.textContent = homeWeatherRadioState.loading ? (sourceLabel ? sourceLabel + ' · 正在同步' : '正在同步天气') : [sourceLabel, weatherUpdatedLabel(updatedAt)].filter(Boolean).join(' · ');
   }
   if (tempEl) tempEl.textContent = temp;
   if (labelEl) labelEl.textContent = label;
   if (moodEl) moodEl.textContent = mood;
   if (statsEl) {
-    statsEl.innerHTML = [
+    var stats = [
       homeWeatherStatLabel('体感', feels, ''),
       homeWeatherStatLabel('湿度', humidity, ''),
       homeWeatherStatLabel('风速', wind, ''),
-    ].join('');
+    ];
+    if ((homeWeatherRadioState.locationSource || '').indexOf('gps') === 0 && coordinateLabel) stats.push(homeWeatherStatLabel('坐标', coordinateLabel, ''));
+    statsEl.innerHTML = stats.join('');
   }
   if (!homeWeatherClockTimer) {
     homeWeatherClockTimer = setInterval(updateHomeWeatherClock, 30000);
@@ -16113,10 +16172,14 @@ async function loadHomeWeatherRadio(force, opts) {
       homeWeatherRadioState.timezone = weatherLocation.timezone || opts.timezone || homeWeatherRadioState.timezone || '';
       if (homeWeatherRadioState.weather && homeWeatherRadioState.weather.location && homeWeatherRadioState.weather.location.name) {
         homeWeatherRadioState.city = homeWeatherRadioState.weather.location.name;
-        localStorage.setItem(HOME_WEATHER_CITY_KEY, homeWeatherRadioState.city);
+        saveHomeWeatherCity(homeWeatherRadioState.city, { coordinateBased: opts.lat != null && opts.lon != null });
       } else if (opts.city) {
         homeWeatherRadioState.city = opts.city;
-        localStorage.setItem(HOME_WEATHER_CITY_KEY, homeWeatherRadioState.city);
+        saveHomeWeatherCity(homeWeatherRadioState.city, { coordinateBased: opts.lat != null && opts.lon != null });
+      }
+      if (opts.lat != null && opts.lon != null && (homeWeatherRadioState.locationSource || '').indexOf('gps') === 0) {
+        var gpsLabel = homeWeatherLocationSourceLabel() || 'GPS';
+        showToast(gpsLabel + ' 天气已更新');
       }
     } catch (e) {
       console.warn('weather radio failed:', e);
@@ -16218,9 +16281,33 @@ function locateWeatherRadio() {
   homeWeatherRadioState.weather = null;
   homeWeatherRadioState.radio = null;
   homeWeatherRadioState.city = '定位中';
+  homeWeatherRadioState.locationSource = '';
+  homeWeatherRadioState.locationAccuracy = null;
+  homeWeatherRadioState.locationError = '';
   renderHomeDiscover();
   var locationSettled = false;
   var ipFallbackStarted = false;
+  var gpsFailed = false;
+  function settleGpsLocation(coords, source, accuracy) {
+    if (locationSettled) return;
+    if (!coords || !isFinite(Number(coords.latitude)) || !isFinite(Number(coords.longitude))) return;
+    locationSettled = true;
+    homeWeatherRadioState.city = 'GPS 定位';
+    homeWeatherRadioState.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || homeWeatherRadioState.timezone || '';
+    homeWeatherRadioState.lastLocatedAt = Date.now();
+    homeWeatherRadioState.locationSource = source || 'gps';
+    homeWeatherRadioState.locationAccuracy = isFinite(Number(accuracy)) ? Number(accuracy) : null;
+    homeWeatherRadioState.locationError = '';
+    renderHomeDiscover();
+    var sourceLabel = source === 'gps-system' ? '系统 GPS' : 'GPS';
+    showToast(sourceLabel + ' 已获取，正在更新天气');
+    loadHomeWeatherRadio(true, {
+      lat: coords.latitude,
+      lon: coords.longitude,
+      city: 'GPS 定位',
+      timezone: homeWeatherRadioState.timezone || '',
+    });
+  }
   function useIpFallback() {
     if (locationSettled || ipFallbackStarted) return;
     ipFallbackStarted = true;
@@ -16232,6 +16319,9 @@ function locateWeatherRadio() {
       homeWeatherRadioState.city = loc.city || '当前位置';
       homeWeatherRadioState.timezone = loc.timezone || homeWeatherRadioState.timezone || '';
       homeWeatherRadioState.lastLocatedAt = Date.now();
+      homeWeatherRadioState.locationSource = 'ip';
+      homeWeatherRadioState.locationAccuracy = null;
+      homeWeatherRadioState.locationError = gpsFailed ? 'GPS_FAILED_IP_FALLBACK' : '';
       localStorage.setItem(HOME_WEATHER_CITY_KEY, homeWeatherRadioState.city);
       renderHomeDiscover();
       showToast('已用网络位置定位到 ' + (loc.city || '当前位置'));
@@ -16247,13 +16337,43 @@ function locateWeatherRadio() {
       homeWeatherRadioState.loading = false;
       homeWeatherRadioState.error = 'LOCATION_FAILED';
       homeWeatherRadioState.city = previousWeatherCity || HOME_WEATHER_DEFAULT_CITY;
+      homeWeatherRadioState.locationSource = 'default';
+      homeWeatherRadioState.locationAccuracy = null;
+      homeWeatherRadioState.locationError = e && e.message || 'LOCATION_FAILED';
       renderHomeDiscover();
       showToast('GPS 获取失败，请手动更新');
       loadHomeWeatherRadio(true, { city: homeWeatherRadioState.city || HOME_WEATHER_DEFAULT_CITY });
     });
   }
+  function useDesktopSystemLocation() {
+    var bridge = window.desktopWindow && window.desktopWindow.getSystemLocation;
+    if (!bridge) {
+      useGpsLocation();
+      return;
+    }
+    Promise.resolve().then(function(){ return bridge(); }).then(function(data){
+      if (locationSettled) return;
+      if (data && data.ok && isFinite(Number(data.latitude)) && isFinite(Number(data.longitude))) {
+        settleGpsLocation({
+          latitude: Number(data.latitude),
+          longitude: Number(data.longitude),
+        }, 'gps-system', data.accuracy);
+        return;
+      }
+      gpsFailed = true;
+      homeWeatherRadioState.locationError = data && data.error || 'SYSTEM_GPS_FAILED';
+      console.warn('weather system gps failed:', data);
+      useGpsLocation();
+    }).catch(function(e){
+      gpsFailed = true;
+      homeWeatherRadioState.locationError = e && e.message || 'SYSTEM_GPS_FAILED';
+      console.warn('weather system gps failed:', e);
+      useGpsLocation();
+    });
+  }
   function useGpsLocation() {
     if (!navigator.geolocation) {
+      gpsFailed = true;
       useIpFallback();
       return;
     }
@@ -16261,23 +16381,15 @@ function locateWeatherRadio() {
       if (locationSettled) return;
       var coords = pos && pos.coords || {};
       if (!isFinite(Number(coords.latitude)) || !isFinite(Number(coords.longitude))) {
+        gpsFailed = true;
         useIpFallback();
         return;
       }
-      locationSettled = true;
-      homeWeatherRadioState.city = previousWeatherCity && previousWeatherCity !== '定位中' ? previousWeatherCity : '当前位置';
-      homeWeatherRadioState.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || homeWeatherRadioState.timezone || '';
-      homeWeatherRadioState.lastLocatedAt = Date.now();
-      renderHomeDiscover();
-      loadHomeWeatherRadio(true, {
-        lat: coords.latitude,
-        lon: coords.longitude,
-        city: homeWeatherRadioState.city || '当前位置',
-        timezone: homeWeatherRadioState.timezone || '',
-      });
+      settleGpsLocation(coords, 'gps-browser', coords.accuracy);
     }, function(e){
+      gpsFailed = true;
+      homeWeatherRadioState.locationError = e && (e.message || e.code) || 'BROWSER_GPS_FAILED';
       console.warn('weather gps location failed:', e);
-      showToast('GPS 获取失败，请手动更新');
       useIpFallback();
     }, {
       enableHighAccuracy: true,
@@ -16285,18 +16397,57 @@ function locateWeatherRadio() {
       maximumAge: 10 * 60 * 1000,
     });
   }
-  useGpsLocation();
+  useDesktopSystemLocation();
 }
 function changeWeatherCity() {
-  var city = window.prompt('输入城市名', homeWeatherRadioState.city || HOME_WEATHER_DEFAULT_CITY);
+  openWeatherCityDialog();
+}
+function applyWeatherCity(city) {
   city = String(city || '').trim();
-  if (!city) return;
+  if (!city) return false;
   homeWeatherRadioState.city = city;
   homeWeatherRadioState.timezone = '';
   homeWeatherRadioState.lastLocatedAt = Date.now();
-  localStorage.setItem(HOME_WEATHER_CITY_KEY, city);
+  homeWeatherRadioState.locationSource = 'manual';
+  homeWeatherRadioState.locationAccuracy = null;
+  homeWeatherRadioState.locationError = '';
+  saveHomeWeatherCity(city);
   homeWeatherRadioState.loaded = false;
+  renderHomeDiscover();
   loadHomeWeatherRadio(true, { city: city });
+  return true;
+}
+function openWeatherCityDialog() {
+  var existing = document.getElementById('weather-city-dialog');
+  if (existing) existing.remove();
+  var mask = document.createElement('div');
+  mask.id = 'weather-city-dialog';
+  mask.className = 'modal-mask show';
+  mask.innerHTML = '<div class="modal weather-city-modal" role="dialog" aria-modal="true" aria-label="更换城市">' +
+    '<button class="modal-close" type="button" aria-label="关闭">×</button>' +
+    '<h2>更换城市</h2>' +
+    '<p class="modal-sub">输入城市或区域名称，天气会立即刷新。</p>' +
+    '<input class="modal-input" id="weather-city-input" type="text" value="' + escHtml(homeWeatherManualCityValue()) + '" placeholder="例如：东莞市松山湖">' +
+    '<div class="modal-actions"><button class="ghost" type="button" data-cancel>取消</button><button class="primary" type="button" data-confirm>更新</button></div>' +
+  '</div>';
+  document.body.appendChild(mask);
+  var input = document.getElementById('weather-city-input');
+  var close = function(){ mask.remove(); };
+  var submit = function(){
+    if (applyWeatherCity(input && input.value)) close();
+  };
+  mask.querySelector('.modal-close').addEventListener('click', close);
+  mask.querySelector('[data-cancel]').addEventListener('click', close);
+  mask.querySelector('[data-confirm]').addEventListener('click', submit);
+  mask.addEventListener('click', function(e){ if (e.target === mask) close(); });
+  if (input) {
+    input.focus();
+    input.select();
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') submit();
+      if (e.key === 'Escape') close();
+    });
+  }
 }
 function shouldShowEmptyHomeCore(ignoreSplash) {
   if (!ignoreSplash && document.body.classList.contains('splash-active')) return false;
@@ -16335,13 +16486,13 @@ function setHomeControlsLocked(locked) {
 }
 function clearShelfForHomeSurface(reason) {
   playbackQueueSideActive = false;
-  playbackQueueSideUserHidden = false;
-  document.body.classList.remove('playback-queue-side-active', 'playback-queue-side-hidden', 'playback-shelf-compact');
+  document.body.classList.remove('playback-queue-side-active');
+  document.body.classList.remove('playback-queue-side-hidden');
   updatePlaybackQueueVisibilityButton();
   if (shelfManager && shelfManager.hasOpenContent && shelfManager.hasOpenContent()) {
     safeShelfCloseContent(reason || 'home-surface');
   }
-  if (typeof setShelfPinnedOpen === 'function') setShelfPinnedOpen(false, true);
+  if (typeof setShelfPinnedOpen === 'function') setShelfPinnedOpen(false, true, true);
   updateShelfHoverCueFromPointer(null);
   shelfHoverCue.target = 0;
   shelfHoverCue.value = 0;
@@ -16430,6 +16581,8 @@ function updateEmptyHomeVisibility(opts) {
   var show = shouldShowEmptyHome();
   emptyHomeActive = show;
   document.body.classList.toggle('empty-home-active', show);
+  document.body.classList.toggle('home-right-hidden', show && !!homeRightHidden);
+  setHomeRightToggleAvailable();
   if (!show) setHomeControlsLocked(false);
   if (show) activateHomeWallpaperPreview();
   else deactivateHomeWallpaperPreview(false);
@@ -16620,6 +16773,8 @@ function goHome() {
   if (typeof setFocusZone === 'function') setFocusZone(null, true);
   if (orbit && orbit.focus) orbit.focus.active = false;
   updateEmptyHomeVisibility({ forceLoad: true });
+  renderHomeNowPlaying();
+  setHomeRightToggleAvailable();
   showToast('已回到 Home');
 }
 function dismissHomePage(opts) {
@@ -19098,6 +19253,7 @@ async function playQueueAt(idx, opts) {
   homeForcedOpen = false;
   if (!opts.preserveHomeState) homeSuppressed = false;
   currentIdx = idx;
+  setPlaybackQueueSideActive(!opts.preserveHomeState);
   trackSwitchToken++;
   markPlayPhase('cancel-previous-track');
   cancelBeatAnalysisTimer();
@@ -19124,7 +19280,7 @@ async function playQueueAt(idx, opts) {
   safePlaybackStep('like-buttons', function(){ updateLikeButtons(song); });
   safePlaybackStep('like-status', function(){ syncLikeStatusForSong(song); });
   safePlaybackStep('cinema-track-profile', function(){ resetCinemaTrackProfile(song); });
-  safePlaybackStep('empty-home', function(){ if (!opts.preserveHomeState) updateEmptyHomeVisibility(); });
+  safePlaybackStep('empty-home', function(){ if (!opts.preserveHomeState) updateEmptyHomeVisibility(); else renderHomeNowPlaying(); });
   safePlaybackStep('track-ui', function(){
     document.getElementById('hint').classList.add('hidden');
     document.getElementById('thumb-title').textContent = song.name;
@@ -19333,7 +19489,7 @@ async function playQueueAt(idx, opts) {
     }
     safeRenderQueuePanel('play-queue-at');
     scheduleShelfRebuild('play-queue-at', true);
-    safePlaybackStep('right-side-sync', function(){ syncPlaybackRightSide({ reason: 'play-queue-at' }); });
+    safePlaybackStep('right-side-sync', function(){ syncPlaybackRightSide({ reason: 'play-queue-at', forceQueue: !opts.preserveHomeState }); });
     safePlaybackStep('shelf-preview-suppress-end', suppressShelfPreviewForPlaybackSwitch);
   } catch (err) {
     console.error('Play failed:', { phase: playPhase, error: err }, err);
@@ -19459,6 +19615,7 @@ function shuffleQueue() {
 function clearQueue() {
   playQueue = []; currentIdx = -1;
   setPlaybackQueueSideActive(false);
+  renderHomeNowPlaying();
   safeRenderQueuePanel('clear-queue');
   safeShelfRebuild('clear-queue');
   updateCustomCoverButton();
@@ -19470,6 +19627,7 @@ function removeFromQueue(idx) {
   playQueue.splice(idx, 1);
   if (currentIdx >= playQueue.length) currentIdx = playQueue.length - 1;
   if (!playQueue.length) setPlaybackQueueSideActive(false);
+  renderHomeNowPlaying();
   safeRenderQueuePanel('remove-queue-item');
   safeShelfRebuild('remove-queue-item');
   updateCustomCoverButton();
@@ -20753,6 +20911,7 @@ setInterval(function(){
   if (!audio) { updatePlaybackProgressUi(); return; }
   updateListenStatsTick(false);
   updatePlaybackProgressUi();
+  renderHomeNowPlaying();
   if (audio.currentTime) updateLyricsHighlight();
 }, 200);
 

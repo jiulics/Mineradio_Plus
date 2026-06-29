@@ -36,6 +36,7 @@ const NETEASE_LOGIN_PARTITION = 'persist:mineradio-netease-login';
 const NETEASE_LOGIN_URL = 'https://music.163.com/#/login';
 const QQ_LOGIN_PARTITION = 'persist:mineradio-qqmusic-login';
 const QQ_LOGIN_URL = 'https://y.qq.com/n/ryqq/profile';
+const LOCAL_MINERADIO_HOSTS = new Set(['127.0.0.1', 'localhost', '::1']);
 
 const CHROMIUM_PERFORMANCE_SWITCHES = [
   ['autoplay-policy', 'no-user-gesture-required'],
@@ -181,6 +182,125 @@ function scheduleWindowStateSend(win, delay = 80) {
     mainWindowStateTimer = null;
     sendWindowState(win);
   }, delay);
+}
+
+function isLocalMineradioUrl(url) {
+  try {
+    const parsed = new URL(String(url || ''));
+    const host = String(parsed.hostname || '').replace(/^\[|\]$/g, '').toLowerCase();
+    const protocolOk = parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    const portOk = String(parsed.port || '') === String(mainServerPort || '');
+    return protocolOk && LOCAL_MINERADIO_HOSTS.has(host) && portOk;
+  } catch (e) {
+    return false;
+  }
+}
+
+function senderIsLocalMineradio(event) {
+  const senderFrameUrl = event && event.senderFrame && event.senderFrame.url;
+  const senderUrl = event && event.sender && event.sender.getURL ? event.sender.getURL() : '';
+  return isLocalMineradioUrl(senderFrameUrl || senderUrl);
+}
+
+function configureMainSessionPermissions() {
+  const ses = session.defaultSession;
+  if (!ses) return;
+  ses.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'geolocation') {
+      const url = webContents && webContents.getURL ? webContents.getURL() : '';
+      const allowed = isLocalMineradioUrl(url);
+      console.log('[Permission] geolocation request', allowed ? 'allow' : 'deny', url || '(empty)');
+      callback(allowed);
+      return;
+    }
+    callback(false);
+  });
+  if (typeof ses.setPermissionCheckHandler === 'function') {
+    ses.setPermissionCheckHandler((webContents, permission, requestingOrigin) => {
+      if (permission !== 'geolocation') return false;
+      const url = (webContents && webContents.getURL && webContents.getURL()) || requestingOrigin || '';
+      const allowed = isLocalMineradioUrl(url);
+      console.log('[Permission] geolocation check', allowed ? 'allow' : 'deny', url || '(empty)');
+      return allowed;
+    });
+  }
+}
+
+function getWindowsSystemLocation(timeoutMs = 14000) {
+  return new Promise((resolve) => {
+    if (process.platform !== 'win32') {
+      resolve({ ok: false, source: 'windows', error: 'UNSUPPORTED_PLATFORM' });
+      return;
+    }
+    const waitMs = Math.max(3500, Math.min(25000, Number(timeoutMs) || 14000));
+    const script = [
+      "$ErrorActionPreference = 'Stop'",
+      'function Emit($payload) { $payload | ConvertTo-Json -Compress -Depth 4 }',
+      '$status = $null',
+      'try {',
+      '  Add-Type -AssemblyName System.Runtime.WindowsRuntime',
+      '  $null = [Windows.Devices.Geolocation.Geolocator,Windows.Devices.Geolocation,ContentType=WindowsRuntime]',
+      '  $null = [Windows.Devices.Geolocation.Geoposition,Windows.Devices.Geolocation,ContentType=WindowsRuntime]',
+      '  $geo = [Windows.Devices.Geolocation.Geolocator]::new()',
+      '  try { $geo.DesiredAccuracyInMeters = [uint32]100 } catch {}',
+      '  try { $geo.DesiredAccuracy = [Windows.Devices.Geolocation.PositionAccuracy]::High } catch {}',
+      '  $status = [string]$geo.LocationStatus',
+      '  $operation = $geo.GetGeopositionAsync()',
+      "  $asTask = [System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq 'AsTask' -and $_.IsGenericMethodDefinition -and $_.GetParameters().Length -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' } | Select-Object -First 1",
+      "  if (-not $asTask) { throw 'WINDOWS_LOCATION_AS_TASK_UNAVAILABLE' }",
+      '  $task = $asTask.MakeGenericMethod([Windows.Devices.Geolocation.Geoposition]).Invoke($null, @($operation))',
+      `  if (-not $task.Wait(${waitMs})) { throw 'WINDOWS_LOCATION_TIMEOUT' }`,
+      "  if ($task.IsFaulted) { throw ($task.Exception.InnerException.Message) }",
+      "  if ($task.IsCanceled) { throw 'WINDOWS_LOCATION_CANCELED' }",
+      '  $position = $task.Result',
+      '  $coord = $position.Coordinate',
+      '  $point = $coord.Point.Position',
+      '  $accuracy = $null',
+      '  try { $accuracy = [double]$coord.Accuracy } catch {}',
+      '  $timestamp = $null',
+      '  try { $timestamp = $coord.Timestamp.ToString("o") } catch {}',
+      '  Emit ([ordered]@{ ok = $true; source = "windows"; latitude = [double]$point.Latitude; longitude = [double]$point.Longitude; accuracy = $accuracy; timestamp = $timestamp; status = [string]$geo.LocationStatus })',
+      '} catch {',
+      '  Emit ([ordered]@{ ok = $false; source = "windows"; error = $_.Exception.Message; status = $status })',
+      '}',
+    ].join('\n');
+    execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', script], {
+      windowsHide: true,
+      timeout: waitMs + 5000,
+      maxBuffer: 256 * 1024,
+    }, (err, stdout, stderr) => {
+      if (err) {
+        resolve({ ok: false, source: 'windows', error: err.killed || err.signal === 'SIGTERM' ? 'WINDOWS_LOCATION_TIMEOUT' : (err.message || 'WINDOWS_LOCATION_FAILED') });
+        return;
+      }
+      try {
+        const line = String(stdout || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean).reverse().find(s => s.startsWith('{'));
+        if (!line) throw new Error(String(stderr || '').trim() || 'WINDOWS_LOCATION_EMPTY_RESPONSE');
+        const data = JSON.parse(line);
+        if (!data || !data.ok) {
+          resolve({ ok: false, source: 'windows', error: data && data.error || 'WINDOWS_LOCATION_FAILED', status: data && data.status || '' });
+          return;
+        }
+        const latitude = Number(data.latitude);
+        const longitude = Number(data.longitude);
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+          resolve({ ok: false, source: 'windows', error: 'WINDOWS_LOCATION_INVALID_COORDS', status: data.status || '' });
+          return;
+        }
+        resolve({
+          ok: true,
+          source: 'windows',
+          latitude,
+          longitude,
+          accuracy: Number.isFinite(Number(data.accuracy)) ? Number(data.accuracy) : null,
+          timestamp: data.timestamp || '',
+          status: data.status || '',
+        });
+      } catch (e) {
+        resolve({ ok: false, source: 'windows', error: e.message || 'WINDOWS_LOCATION_PARSE_FAILED' });
+      }
+    });
+  });
 }
 
 function rectsOverlapOnY(a, b) {
@@ -1121,6 +1241,15 @@ ipcMain.handle('desktop-window-close', (event) => {
   getSenderWindow(event)?.close();
 });
 
+ipcMain.handle('mineradio-system-location', async (event) => {
+  if (!senderIsLocalMineradio(event)) {
+    return { ok: false, source: 'windows', error: 'FORBIDDEN' };
+  }
+  const result = await getWindowsSystemLocation(14000);
+  console.log('[WeatherLocation] system', result.ok ? 'ok' : 'failed', result.ok ? `${result.latitude},${result.longitude}` : (result.error || 'unknown'));
+  return result;
+});
+
 ipcMain.handle('mineradio-hotkeys-configure-global', (_event, bindings) => {
   return configureMineradioGlobalHotkeys(bindings);
 });
@@ -1344,6 +1473,7 @@ async function createWindow() {
   await waitForServer(localServer);
 
   const initialBounds = getWindowedBounds();
+  configureMainSessionPermissions();
 
   mainWindow = new BrowserWindow({
     ...initialBounds,

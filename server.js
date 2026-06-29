@@ -46,6 +46,8 @@ const {
 } = require('NeteaseCloudMusicApi');
 const http = require('http');
 const https = require('https');
+const { HttpProxyAgent } = require('http-proxy-agent');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 const fs   = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -88,12 +90,16 @@ const UPDATE_FALLBACK_NOTES = [
 ];
 const OPEN_METEO_FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
 const OPEN_METEO_GEOCODE_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const OSM_REVERSE_GEOCODE_URL = 'https://nominatim.openstreetmap.org/reverse';
 const WEATHER_IP_LOCATION_URL = 'http://ip-api.com/json/';
 const WEATHER_DEFAULT_LOCATION = {
-  name: '上海',
+  name: '东莞市松山湖',
   country: 'China',
-  latitude: 31.2304,
-  longitude: 121.4737,
+  admin1: '广东省',
+  admin2: '东莞市',
+  displayName: '广东省 · 东莞市 · 松山湖',
+  latitude: 22.921,
+  longitude: 113.895,
   timezone: 'Asia/Shanghai',
 };
 const QQ_LOGIN_COOKIE_PRIORITY = [
@@ -1775,14 +1781,42 @@ const LISTEN1_PROVIDER_CONFIG = {
 };
 let kuwoTokenCache = { value: '', expiresAt: 0 };
 
+function shouldBypassProxy(hostname) {
+  const host = String(hostname || '').toLowerCase();
+  if (!host) return false;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return true;
+  const noProxy = String(process.env.NO_PROXY || process.env.no_proxy || '').split(',').map(v => v.trim().toLowerCase()).filter(Boolean);
+  return noProxy.some(rule => {
+    if (rule === '*') return true;
+    if (rule.startsWith('.')) return host.endsWith(rule);
+    return host === rule || host.endsWith('.' + rule);
+  });
+}
+
+function proxyAgentForUrl(u) {
+  if (!u || shouldBypassProxy(u.hostname)) return null;
+  const proxy = u.protocol === 'https:'
+    ? (process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy || '')
+    : (process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy || '');
+  if (!proxy) return null;
+  try {
+    return u.protocol === 'https:' ? new HttpsProxyAgent(proxy) : new HttpProxyAgent(proxy);
+  } catch (e) {
+    console.warn('[Proxy] invalid proxy ignored:', e.message);
+    return null;
+  }
+}
+
 function requestText(targetUrl, opts, body) {
   opts = opts || {};
   return new Promise((resolve, reject) => {
     const u = new URL(targetUrl);
     const lib = u.protocol === 'https:' ? https : http;
+    const agent = opts.agent || proxyAgentForUrl(u);
     const req = lib.request(u, {
       method: opts.method || 'GET',
       headers: opts.headers || {},
+      agent: agent || undefined,
     }, response => {
       const chunks = [];
       response.on('data', chunk => chunks.push(chunk));
@@ -1972,21 +2006,85 @@ async function resolveOpenMeteoLocation(query) {
   };
 }
 
+function formatWeatherPlaceName(location) {
+  const rawParts = [
+    location && location.admin1,
+    location && location.admin2,
+    location && location.admin3,
+    location && location.name,
+  ];
+  const parts = rawParts
+    .map(v => String(v || '').trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index)
+    .filter((value, index, arr) => !arr.slice(index + 1).some(next => next !== value && next.includes(value)));
+  return parts.join(' · ');
+}
+
+function pickOsmAddressName(address) {
+  address = address || {};
+  return address.suburb || address.town || address.village || address.hamlet || address.neighbourhood || address.road || address.city || address.county || '';
+}
+
+async function resolveReverseWeatherLocation(lat, lon, fallbackName) {
+  const u = new URL(OSM_REVERSE_GEOCODE_URL);
+  u.searchParams.set('format', 'jsonv2');
+  u.searchParams.set('lat', String(lat));
+  u.searchParams.set('lon', String(lon));
+  u.searchParams.set('accept-language', 'zh-CN');
+  u.searchParams.set('addressdetails', '1');
+  u.searchParams.set('zoom', '16');
+  try {
+    const body = await requestJson(u.toString(), { headers: { 'User-Agent': 'Mineradio/1.1.3 reverse geocode' } });
+    const address = body && body.address || {};
+    if (!body || (!body.display_name && !Object.keys(address).length)) return null;
+    const resolved = {
+      name: pickOsmAddressName(address) || body.name || fallbackName || 'GPS 定位',
+      country: address.country || '',
+      admin1: address.state || '',
+      admin2: address.city || address.county || '',
+      admin3: address.suburb || address.town || address.village || address.hamlet || address.neighbourhood || '',
+      road: address.road || '',
+      postcode: address.postcode || '',
+      latitude: lat,
+      longitude: lon,
+      timezone: 'auto',
+      source: 'gps',
+    };
+    resolved.displayName = formatWeatherPlaceName(resolved) || resolved.name;
+    resolved.rawDisplayName = body.display_name || '';
+    return resolved;
+  } catch (e) {
+    console.warn('[WeatherRadio] reverse geocode failed:', e.message);
+    return null;
+  }
+}
+
 async function fetchOpenMeteoWeather(params) {
   params = params || {};
   let location;
   const lat = clampNumber(params.lat, -90, 90, NaN);
   const lon = clampNumber(params.lon, -180, 180, NaN);
   if (Number.isFinite(lat) && Number.isFinite(lon)) {
-    location = {
-      name: String(params.city || params.name || '当前位置').trim() || '当前位置',
+    const label = String(params.city || params.name || '').trim();
+    const reverseLocation = await resolveReverseWeatherLocation(lat, lon, label || 'GPS 定位');
+    location = reverseLocation || {
+      name: label && label !== WEATHER_DEFAULT_LOCATION.name ? label : '经纬度定位',
       country: '',
+      admin1: '',
+      admin2: '',
+      displayName: label && label !== WEATHER_DEFAULT_LOCATION.name ? label : '经纬度定位',
       latitude: lat,
       longitude: lon,
       timezone: params.timezone || 'auto',
+      source: 'gps',
     };
+    location.latitude = lat;
+    location.longitude = lon;
+    if (params.timezone) location.timezone = params.timezone;
   } else {
     location = await resolveOpenMeteoLocation(params.city || params.q || params.location);
+    location.displayName = formatWeatherPlaceName(location) || location.name;
   }
   const u = new URL(OPEN_METEO_FORECAST_URL);
   u.searchParams.set('latitude', String(location.latitude));
@@ -2001,12 +2099,18 @@ async function fetchOpenMeteoWeather(params) {
     provider: 'open-meteo',
     location: {
       name: location.name,
+      displayName: location.displayName || formatWeatherPlaceName(location) || location.name,
       country: location.country || '',
       admin1: location.admin1 || '',
+      admin2: location.admin2 || '',
+      admin3: location.admin3 || '',
+      road: location.road || '',
+      rawDisplayName: location.rawDisplayName || '',
       latitude: location.latitude,
       longitude: location.longitude,
       timezone: body.timezone || location.timezone || '',
       fallback: !!location.fallback,
+      source: location.source || (Number.isFinite(lat) && Number.isFinite(lon) ? 'gps' : 'city'),
     },
     label: openMeteoWeatherLabel(cur.weather_code),
     weatherCode: Number(cur.weather_code),
@@ -4049,6 +4153,7 @@ const server = http.createServer(async (req, res) => {
         lat: url.searchParams.get('lat'),
         lon: url.searchParams.get('lon'),
         timezone: url.searchParams.get('timezone') || '',
+        providers: url.searchParams.get('providers') || '',
       });
       sendJSON(res, data);
     } catch (err) {
